@@ -1,5 +1,5 @@
-## Machine Learning Models
-# Current Models
+# Machine Learning Models
+## Current Models
 - Linear Regression
 - LASSO
 - Ridge Regression
