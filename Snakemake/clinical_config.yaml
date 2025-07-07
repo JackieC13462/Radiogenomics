@@ -1,0 +1,89 @@
+cancer_types:
+  #- BRCA
+  #- LGG
+  #- GBM
+  #- KIRC
+  #- CCRCC
+  - HNSCC
+  #- PDA
+  #- NSCLC
+
+clinical_data:
+  #NSCLC: "<path_to_NSCLC_clinical_data>"
+  #BRCA: "<path_to_BRCA_clinical_data>"
+  #LGG: "<path_to_LGG_clinical_data>"
+  #GBM: "<path_to_GBM_clinical_data>"
+  #KIRC: "<path_to_KIRC_clinical_data>"
+  #CCRCC: "<path_to_CCRCC_clinical_data>"
+  HNSCC: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/HNSCC_combined_clinical_data.csv"
+  #PDA: "<path_to_PDA_clinical_data>"
+
+sample_ids:
+  #NSCLC: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/NSCLC_patientids.txt"
+  HNSCC: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/CPTAC_HNSCC_patientids.txt"
+  #PDA: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/CPTAC_PDA_patientids.txt"
+  #CCRCC: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/CPTAC_CCRCC_patientids.txt"
+  #GBM: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/TCGA_GBM_patientids.txt"
+  #BRCA: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/TCGA_BRCA_patientids.txt"
+  #KIRC: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/TCGA_KIRC_patientids.txt"
+  #LGG: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/TCGA_LGG_patientids.txt"
+radiomics_file:
+  #NSCLC: "<path_to_NSCLC_radiomics_features>"
+  #BRCA: "<path_to_BRCA_radiomics_features>"
+  #LGG: "<path_to_LGG_radiomics_features>"
+  #GBM: "<path_to_GBM_radiomics_features>"
+  #KIRC: "<path_to_KIRC_radiomics_features>"
+  #CCRCC: "<path_to_CCRCC_radiomics_features>"
+  HNSCC: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_radiomics_features_filtered.csv"
+  #PDA: "<path_to_PDA_radiomics_features>"
+genomics_file:
+  HNSCC:
+    HALLMARK: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_HALLMARK_features_filtered.csv"
+    KEGG: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_KEGG_features_filtered.csv"
+    REACTOME: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_REACTOME_features_filtered.csv"
+    BIOCARTA: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_BIOCARTA_features_filtered.csv"
+  #NSCLC:
+    #Hallmark: "<path_to_NSCLC_hallmark_genomics_data>"
+    #Kegg: "<path_to_NSCLC_kegg_genomics_data>"
+    #Reactome: "<path_to_NSCLC_reactome_genomics_data>"
+    #Biocarta: "<path_to_NSCLC_biocarta_genomics_data>"
+  #PDA:
+    #Hallmark: "<path_to_PDA_hallmark_genomics_data>"
+    #Kegg: "<path_to_PDA_kegg_genomics_data>"
+    #Reactome: "<path_to_PDA_reactome_genomics_data>"
+    #Biocarta: "<path_to_PDA_biocarta_genomics_data>"
+  #CCRCC:
+    #Hallmark: "<path_to_CCRCC_hallmark_genomics_data>"
+    #Kegg: "<path_to_CCRCC_kegg_genomics_data>"
+    #Reactome: "<path_to_CCRCC_reactome_genomics_data>"
+    #Biocarta: "<path_to_CCRCC_biocarta_genomics_data>"
+  #GBM:
+    #Hallmark: "<path_to_GBM_hallmark_genomics_data>"
+    #Kegg: "<path_to_GBM_kegg_genomics_data>"
+    #Reactome: "<path_to_GBM_reactome_genomics_data>"
+    #Biocarta: "<path_to_GBM_biocarta_genomics_data>"
+  #BRCA:
+    #Hallmark: "<path_to_BRCA_hallmark_genomics_data>"
+    #Kegg: "<path_to_BRCA_kegg_genomics_data>"
+    #Reactome: "<path_to_BRCA_reactome_genomics_data>"
+    #Biocarta: "<path_to_BRCA_biocarta_genomics_data>"
+  #KIRC:
+    #Hallmark: "<path_to_KIRC_hallmark_genomics_data>" 
+    #Kegg: "<path_to_KIRC_kegg_genomics_data>"
+    #Reactome: "<path_to_KIRC_reactome_genomics_data>"
+    #Biocarta: "<path_to_KIRC_biocarta_genomics_data>"
+  #LGG:
+    #Hallmark: "<path_to_LGG_hallmark_genomics_data>"
+    #Kegg: "<path_to_LGG_kegg_genomics_data>"
+    #Reactome: "<path_to_LGG_reactome_genomics_data>"
+    #Biocarta: "<path_to_LGG_biocarta_genomics_data>"  
+
+
+output_dir: 
+  #BRCA: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/BRCA/"
+  #LGG: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/LGG/"
+  #GBM: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/GBM/"
+  #KIRC: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/KIRC/"
+  #CCRCC: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/CCRCC/"
+  HNSCC: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/HNSCC/"
+  #PDA: "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/PDA/"
