@@ -13,7 +13,6 @@ perform_hallmark_samplewise_fgsea <- function(input_file, gmt_file, output_file)
   # Read Hallmark gene sets from GMT file
   gmt <- getGmt(gmt_file)
   gene_set_list <- geneIds(gmt)
-  pathway_names <- names(gene_set_list)
   
   # ---- Filter gene sets: keep only those with >=80% genes present in RNAseq data ----
   rnaseq_genes <- rownames(expression_data)
@@ -29,7 +28,6 @@ perform_hallmark_samplewise_fgsea <- function(input_file, gmt_file, output_file)
       proportion >= 0.8 & ncol(expression_data) >= n.cutoff
     })
   ]
-  pathway_names <- names(filtered_gene_set_list) # Update pathway names after filtering
   cat("Number of gene sets after filtering for >=80% gene coverage:", length(filtered_gene_set_list), "\n")
   
   # Prepare expression matrix for GSVA (genes as rows, samples as columns)
