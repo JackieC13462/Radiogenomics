@@ -1,6 +1,5 @@
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(GSEABase))
-suppressPackageStartupMessages(library(fgsea))
 suppressPackageStartupMessages(library(GSVA))
 
 perform_biocarta_samplewise_gsva <- function(input_file, gmt_file, output_file) {
@@ -14,7 +13,6 @@ perform_biocarta_samplewise_gsva <- function(input_file, gmt_file, output_file) 
   # Read BioCarta gene sets from GMT file
   gmt <- getGmt(gmt_file)
   gene_set_list <- geneIds(gmt)
-  # pathway_names <- names(gene_set_list) # Not needed, will update after filtering
   
   # ---- Filter gene sets: keep only those with >=80% genes present in RNAseq data ----
   rnaseq_genes <- rownames(expression_data)

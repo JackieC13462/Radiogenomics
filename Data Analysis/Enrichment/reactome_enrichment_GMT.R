@@ -14,8 +14,7 @@ perform_reactome_samplewise_gsva <- function(input_file, gmt_file, output_file) 
   # Read Reactome gene sets from GMT file
   gmt <- getGmt(gmt_file)
   gene_set_list <- geneIds(gmt)
-  # pathway_names <- names(gene_set_list) # Not needed, will update after filtering
-  
+
   # ---- Filter gene sets: keep only those with >=80% genes present in RNAseq data ----
   rnaseq_genes <- rownames(expression_data)
   filtered_gene_set_list <- lapply(gene_set_list, function(genes) {
