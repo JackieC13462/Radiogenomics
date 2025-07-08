@@ -40,9 +40,17 @@ perform_hallmark_samplewise_fgsea <- function(input_file, gmt_file, output_file)
   # Transpose to match previous output: samples as rows, pathways as columns
   results <- t(gsva_results)
   # Ensure column and row names are correct
-  colnames(results) <- colnames(gsva_results)
-  rownames(results) <- colnames(expression_data)
+  colnames(results) <- rownames(gsva_results)  # Gene set names become column names
+  rownames(results) <- colnames(gsva_results)  # Sample names become row names
   
+  # Debug: Print first 5 rows and columns of results matrix
+  cat("Debug: First 5x5 of results matrix:\n")
+  n_rows <- min(5, nrow(results))
+  n_cols <- min(5, ncol(results))
+  if (n_rows > 0 && n_cols > 0) {
+    print(as.matrix(results[seq_len(n_rows), seq_len(n_cols)]))
+  }
+
   # Save results
   write.csv(results, output_file, row.names = TRUE, quote = FALSE)
   cat("Sample-wise fgsea results saved to:", output_file, "\n")
