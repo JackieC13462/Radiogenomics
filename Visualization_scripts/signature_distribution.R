@@ -3,10 +3,16 @@ library(ggplot2)
 
 # ---- USER INPUTS ----
 input_files <- list(
-    HNSCC = "/Users/jackie-mac/Desktop/VSCode/outputs/enrichment_scores/CPTAC_HNSCC_compiled_enrichment.csv"
+    HNSCC = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/HNSCC_compiled_enrichment.csv",
+    BRCA = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/BRCA_compiled_enrichment.csv",
+    KIRC = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/KIRC_compiled_enrichment.csv",
+    LGG = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/LGG_compiled_enrichment.csv",
+    GBM = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/GBM_compiled_enrichment.csv",
+    CCRCC = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/CCRCC_compiled_enrichment.csv",
+    PDA = "/Users/jackie-mac/Desktop/VSCode/procdata/RNA_enrichments/PDA_compiled_enrichment.csv"
 )
 radiomics_file <- "/Users/jackie-mac/Desktop/VSCode/outputs/Correlative_analysis/HNSCC_radiomics_features_filtered.csv"
-output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/enrichment_scores/histograms"
+output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/histograms/signature_distribution"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # Pathway source patterns
