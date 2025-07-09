@@ -12,9 +12,13 @@
 #   4. column_prefix: Prefix for clinical column matching.
 #   5. output_prefix: Prefix for output file naming.
 #
-# Outputs:
-#   - CSV files with Cox model results for each feature (binary and continuous), including HR, CI, p-value, and FDR.
-#   - Console messages summarizing analysis steps.
+# Output:
+#   CSV file containing Cox regression results for each radiomics feature:
+#   - Feature name
+#   - Hazard Ratio (HR)
+#   - 95% Confidence Interval bounds
+#   - P-value
+#   - Concordance index (C-index)
 #
 # Main Steps:
 #   - Loads and filters genomics and clinical data.
