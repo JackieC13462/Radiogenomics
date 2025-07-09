@@ -2,6 +2,7 @@ datasets:
   - name: HNSCC
     genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/HNSCC_compiled_enrichment.csv"
     radiomics_file: "/cluster/projects/radiomics/PublicDatasets/procdata/HeadNeck/TCIA_CPTAC-HNSCC/radiomic_features/radiomicfeatures_CPTAC-HNSCC.csv"
+    clinical_file: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/HNSCC_combined_clinical_data.csv"
   # - name: BRCA
   #   genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/BRCA_compiled_enrichment.csv"
   #   radiomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/BRCA_radiomics.csv"
