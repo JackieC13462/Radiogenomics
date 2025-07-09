@@ -18,7 +18,7 @@ clinical_data <- read.csv(clinical_data_file)
 
 # ---- FILTER RADIOMICS FEATURES BASED ON PREFIXES ----
 # Define allowed prefixes
-allowed_prefixes <- c("patient_ID", "original-", "wavelet-", "square_", "squareroot_", "logarithm_", "exponential_", "gradient_")
+allowed_prefixes <- c("patient_ID", "original_", "wavelet-", "square_", "squareroot_", "logarithm_", "exponential_", "gradient_")
 
 # Filter columns based on prefixes
 filtered_features <- radiomics_features[, grepl(paste0("^(", paste(allowed_prefixes, collapse = "|"), ")"), colnames(radiomics_features))]
@@ -77,6 +77,7 @@ results <- data.frame(
   CI_lower = numeric(),
   CI_upper = numeric(),
   p_value = numeric(),
+  C_index = numeric(),
   stringsAsFactors = FALSE
 )
 
@@ -96,6 +97,8 @@ for (feature in colnames(binarized_features)) {
   hr <- summary_cox$coefficients[1, "exp(coef)"]
   ci <- summary_cox$conf.int[1, c("lower .95", "upper .95")]
   p_value <- summary_cox$coefficients[1, "Pr(>|z|)"]
+  # Extract concordance index
+  c_index <- summary_cox$concordance["C"]
   
   # Append to results dataframe
   results <- rbind(results, data.frame(
@@ -103,7 +106,8 @@ for (feature in colnames(binarized_features)) {
     HR = hr,
     CI_lower = ci[1],
     CI_upper = ci[2],
-    p_value = p_value
+    p_value = p_value,
+    C_index = c_index
   ))
 }
 
