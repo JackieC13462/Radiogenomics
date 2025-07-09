@@ -1,3 +1,19 @@
+# ===============================================================================
+# Radiogenomics Correlative Analysis Pipeline
+# ===============================================================================
+# 
+# Purpose: Automated workflow for integrated radiogenomic correlation analysis
+#          that identifies associations between imaging features (radiomics) and
+#          genomic pathway signatures across multiple cancer datasets.
+#
+# Pipeline Overview:
+#   1. Harmonizes sample IDs between genomic and radiomic datasets
+#   2. Separates genomic data by pathway source (KEGG, HALLMARK, REACTOME, BIOCARTA)
+#   3. Filters highly correlated features to reduce redundancy
+#   4. Performs radiogenomic correlation analysis for each pathway group
+#   5. Analyzes clinical correlations with genomic signatures
+# ===============================================================================
+
 # Define config variables for input/output locations
 configfile: "correlative_config.yaml"
 
