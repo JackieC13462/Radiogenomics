@@ -1,3 +1,41 @@
+# ===============================================================================
+# MSigDB Hallmark Pathway Enrichment Analysis using GSVA
+# ===============================================================================
+# 
+# Purpose: Performs Gene Set Variation Analysis (GSVA) using MSigDB Hallmark 
+#          gene sets to calculate pathway enrichment scores representing key
+#          biological processes and cancer-related pathways.
+#
+# Description:
+#   This script calculates sample-wise enrichment scores for MSigDB Hallmark
+#   pathways, which represent well-defined biological processes with coherent
+#   expression patterns. Hallmark pathways are refined from canonical pathways
+#   to reduce redundancy and focus on core biological processes.
+#
+# Input Requirements:
+#   1. Gene expression matrix: Genes as rows, samples as columns
+#   2. MSigDB Hallmark gene sets: GMT format file (h.all.v7.4.symbols.gmt)
+#   3. Gene symbols must match between expression data and pathway definitions
+#
+# Output:
+#   - Hallmark pathway enrichment score matrix: Pathways as rows, samples as columns
+#   - Enrichment scores indicate pathway activity levels for each sample
+#   - Positive scores indicate pathway activation, negative scores indicate suppression
+#   - Results formatted for downstream radiogenomic correlation analysis
+#
+# Analysis Method:
+#   - Uses GSVA algorithm for robust single-sample enrichment scoring
+#   - Employs kernel density estimation for score calculation
+#   - Normalizes scores to enable cross-sample comparisons
+#   - Focuses on 50 well-characterized Hallmark pathways
+#
+# Usage:
+#   Rscript hallmark_enrichment_GMT.R <input_expression_file> <hallmark_gmt_file> <output_file>
+#
+# Dependencies: data.table, GSEABase, GSVA
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(GSEABase))
 suppressPackageStartupMessages(library(GSVA))

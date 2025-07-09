@@ -1,3 +1,44 @@
+# ===============================================================================
+# Linear Regression Model for Radiogenomic Feature Analysis
+# ===============================================================================
+# 
+# Purpose: Performs multiple linear regression analysis using radiogenomic features
+#          to predict clinical outcomes and identify significant predictors.
+#
+# Description:
+#   This script implements standard multiple linear regression with optional
+#   stepwise feature selection. It evaluates the linear relationship between
+#   radiogenomic features and continuous clinical outcomes, providing interpretable
+#   coefficients and statistical significance tests.
+#
+# Input Requirements:
+#   1. Feature matrix: CSV with samples as rows, features (radiomic/genomic) as columns
+#   2. Clinical outcome data: Continuous target variable
+#   3. Properly formatted data with matching sample IDs
+#
+# Output:
+#   - Linear regression coefficients and p-values
+#   - Model performance metrics (R², adjusted R², RMSE)
+#   - Feature significance tests
+#   - Residual analysis and model diagnostics
+#   - Prediction results on test data
+#
+# Analysis Method:
+#   - Uses ordinary least squares estimation
+#   - Optional stepwise selection for feature reduction
+#   - Evaluates model assumptions (linearity, normality, homoscedasticity)
+#   - Provides confidence intervals for coefficients
+#   - Cross-validation for performance assessment
+#
+# Usage:
+#   1. Configure input file paths and parameters
+#   2. Run: Rscript linear_regression_model.R
+#   3. Review model coefficients and diagnostic plots
+#
+# Dependencies: data.table, caret, MASS
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 # Load libraries
 library(data.table)
 library(caret)

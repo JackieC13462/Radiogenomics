@@ -1,3 +1,41 @@
+# ===============================================================================
+# BioCarta Pathway Enrichment Analysis using GSVA
+# ===============================================================================
+# 
+# Purpose: Performs Gene Set Variation Analysis (GSVA) using BioCarta pathway
+#          gene sets to calculate enrichment scores for cellular and molecular
+#          pathways with focus on signal transduction networks.
+#
+# Description:
+#   This script calculates sample-wise enrichment scores for BioCarta pathways,
+#   which represent manually curated pathway maps focusing on molecular 
+#   interactions and signal transduction cascades. BioCarta pathways are
+#   particularly useful for understanding cellular communication networks.
+#
+# Input Requirements:
+#   1. Gene expression matrix: Genes as rows, samples as columns
+#   2. BioCarta pathway gene sets: GMT format file containing pathway definitions
+#   3. Gene symbols must match between expression data and pathway annotations
+#
+# Output:
+#   - BioCarta pathway enrichment score matrix: Pathways as rows, samples as columns
+#   - Enrichment scores represent pathway activity levels for each sample
+#   - Positive scores indicate pathway activation, negative scores indicate inhibition
+#   - Results formatted for downstream radiogenomic correlation analysis
+#
+# Analysis Method:
+#   - Uses GSVA algorithm for single-sample pathway enrichment scoring
+#   - Employs rank-based statistics for robust score calculation
+#   - Normalizes scores to enable cross-sample and cross-pathway comparisons
+#   - Focuses on signal transduction and metabolic pathways
+#
+# Usage:
+#   Rscript biocarta_enrichment_GMT.R <input_expression_file> <biocarta_gmt_file> <output_file>
+#
+# Dependencies: data.table, GSEABase, GSVA
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(GSEABase))
 suppressPackageStartupMessages(library(GSVA))

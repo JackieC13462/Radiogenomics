@@ -1,3 +1,44 @@
+# ===============================================================================
+# LASSO Regression for Radiomic Feature Selection and Prediction
+# ===============================================================================
+# 
+# Purpose: Performs LASSO (Least Absolute Shrinkage and Selection Operator) 
+#          regression on radiomic features to predict clinical outcomes while
+#          performing automatic feature selection.
+#
+# Description:
+#   This script uses LASSO regression to identify the most predictive radiomic
+#   features for a given clinical outcome. LASSO automatically performs feature
+#   selection by shrinking less important coefficients to zero, resulting in 
+#   a sparse model with only the most relevant features.
+#
+# Input Requirements:
+#   1. Radiomic features file: CSV with samples as rows, radiomic features as columns
+#   2. Clinical outcome data: Continuous or binary outcome variable
+#   3. Properly formatted data with matching sample IDs
+#
+# Output:
+#   - Selected radiomic features with non-zero coefficients
+#   - Model performance metrics (R², RMSE, etc.)
+#   - Cross-validation results
+#   - Feature importance rankings
+#   - Prediction results on test data
+#
+# Analysis Method:
+#   - Uses cross-validation to select optimal lambda parameter
+#   - Applies LASSO penalty for feature selection
+#   - Evaluates model performance using multiple metrics
+#   - Provides interpretable feature coefficients
+#
+# Usage:
+#   1. Configure input file paths and outcome variables
+#   2. Run: Rscript LASSO_radiomics.R
+#   3. Review selected features and model performance
+#
+# Dependencies: data.table, caret, glmnet
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 # Load libraries
 library(data.table)
 library(caret)

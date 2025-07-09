@@ -1,6 +1,44 @@
-# =========================
-# Radiomics Feature Self-Correlation (Spearman)
-# =========================
+# ===============================================================================
+# Radiomic Features Self-Correlation Analysis
+# ===============================================================================
+# 
+# Purpose: Computes Spearman correlation matrix among radiomic features to identify
+#          highly correlated feature groups that may be redundant or represent
+#          similar imaging characteristics.
+#
+# Description:
+#   This script calculates pairwise Spearman correlations between all radiomic
+#   features within a dataset. It filters features by allowed prefixes to focus
+#   on clinically relevant original and transformed features while excluding
+#   diagnostic metadata. Results help identify feature redundancy.
+#
+# Input Requirements:
+#   1. Radiomic features file: CSV with samples as rows, radiomic features as columns
+#   2. File must contain "SampleID" as first column header
+#   3. Features should include original_, wavelet-, and transformation prefixes
+#
+# Output:
+#   CSV file containing self-correlation matrix:
+#   - Square matrix with radiomic features as both rows and columns
+#   - Spearman correlation coefficients ranging from -1 to +1
+#   - Diagonal values = 1 (perfect self-correlation)
+#   - Used for identifying highly correlated feature clusters
+#
+# Analysis Method:
+#   - Filters features by allowed prefixes (original_, wavelet-, square_, etc.)
+#   - Uses Spearman rank correlation (robust to outliers)
+#   - Computes pairwise complete observations
+#   - Results used downstream for feature selection and redundancy removal
+#
+# Usage:
+#   Rscript radiomics_self_correlation.R <radiomic_features_file> <output_correlation_file>
+#
+# Example:
+#   Rscript radiomics_self_correlation.R HNSCC_radiomics.csv HNSCC_radiomics_correlation.csv
+#
+# Dependencies: Standard R libraries (stats, utils)
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 suppressPackageStartupMessages({
   library(data.table)

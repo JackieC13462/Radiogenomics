@@ -1,8 +1,41 @@
-# =========================
-# Enrichment Matrix Separator by Pathway Source
-# =========================
+# ===============================================================================
+# Pathway Enrichment Matrix Separator by Source Database
+# ===============================================================================
+# 
+# Purpose: Separates a combined genomic enrichment matrix into individual pathway
+#          source-specific matrices (KEGG, HALLMARK, REACTOME, BIOCARTA) for
+#          downstream analysis and correlation studies.
 #
-# This script separates a combined enrichment matrix into individual matrices
+# Description:
+#   This script takes a single genomic enrichment matrix containing pathway
+#   scores from multiple databases and splits it into separate matrices based
+#   on pathway source. Each output matrix contains only pathways from one
+#   database, enabling source-specific radiogenomic correlation analysis.
+#
+# Input Requirements:
+#   1. Combined enrichment matrix: CSV with samples as rows, all pathway scores as columns
+#   2. Pathway names should contain source identifiers (KEGG_, HALLMARK_, etc.)
+#   3. First column should contain sample IDs
+#
+# Output:
+#   Four separate enrichment matrices:
+#   - {prefix}_KEGG_enrichment.csv: KEGG pathway scores only
+#   - {prefix}_HALLMARK_enrichment.csv: MSigDB Hallmark pathway scores only
+#   - {prefix}_REACTOME_enrichment.csv: Reactome pathway scores only
+#   - {prefix}_BIOCARTA_enrichment.csv: BioCarta pathway scores only
+#
+# Processing Method:
+#   - Identifies pathway columns by source-specific prefixes or patterns
+#   - Transposes matrices to have samples as rows (standard format)
+#   - Adds "SampleID" header to first column for consistency
+#   - Maintains sample order across all output files
+#
+# Usage:
+#   Rscript enrichment_separator.R <combined_enrichment_file> <output_directory> <prefix>
+#
+# Dependencies: Standard R libraries (utils, stats)
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 # based on pathway source (KEGG, HALLMARK, BIOCARTA, REACTOME).
 # Each output file contains pathways from one source with samples as rows and pathways as columns.
 #

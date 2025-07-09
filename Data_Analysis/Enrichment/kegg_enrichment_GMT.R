@@ -1,3 +1,41 @@
+# ===============================================================================
+# KEGG Pathway Enrichment Analysis using GSVA
+# ===============================================================================
+# 
+# Purpose: Performs Gene Set Variation Analysis (GSVA) using KEGG pathway 
+#          gene sets to calculate pathway enrichment scores for each sample.
+#
+# Description:
+#   This script takes RNA-seq gene expression data and calculates sample-wise
+#   enrichment scores for KEGG (Kyoto Encyclopedia of Genes and Genomes) pathways.
+#   GSVA transforms gene-level expression data into pathway-level scores, enabling
+#   pathway-centric analysis and reducing dimensionality.
+#
+# Input Requirements:
+#   1. Gene expression matrix: Genes as rows, samples as columns
+#   2. KEGG pathway gene sets: GMT format file containing pathway definitions
+#   3. Gene identifiers must match between expression data and pathway definitions
+#
+# Output:
+#   - Pathway enrichment score matrix: Pathways as rows, samples as columns
+#   - Enrichment scores represent pathway activity levels for each sample
+#   - Scores can be positive (upregulated) or negative (downregulated)
+#   - Results saved as CSV for downstream radiogenomic correlation analysis
+#
+# Analysis Method:
+#   - Uses GSVA algorithm for single-sample pathway enrichment
+#   - Employs empirical cumulative distribution functions
+#   - Normalizes scores across samples for comparative analysis
+#   - Handles missing genes gracefully
+#
+# Usage:
+#   1. Ensure KEGG GMT file is available and properly formatted
+#   2. Configure input file paths in the script
+#   3. Run: Rscript kegg_enrichment_GMT.R
+#
+# Dependencies: data.table, GSEABase, GSVA
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(GSEABase))

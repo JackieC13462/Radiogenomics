@@ -1,6 +1,42 @@
-# survival_curves.R
-# Generate Kaplan-Meier survival curves for high vs low signature expression (median split)
-# Hardcoded input lists for multiple datasets
+# ===============================================================================
+# Kaplan-Meier Survival Curve Generator for Radiogenomic Signatures
+# ===============================================================================
+# 
+# Purpose: Generates Kaplan-Meier survival curves comparing high vs low expression
+#          groups for genomic signatures and radiomic features using median split
+#          stratification to visualize survival differences.
+#
+# Description:
+#   This script creates survival curve plots for radiogenomic features by dividing
+#   patients into high and low expression groups based on median values. It generates
+#   publication-ready Kaplan-Meier curves with log-rank test statistics to assess
+#   the prognostic value of different signatures and features.
+#
+# Input Requirements:
+#   1. Feature expression data: CSV with samples as rows, features as columns
+#   2. Clinical survival data: Must include overall survival time and event status
+#   3. Matching sample IDs between feature and clinical datasets
+#
+# Output:
+#   - Kaplan-Meier survival curve plots (PDF/PNG format)
+#   - Log-rank test p-values for survival differences
+#   - Risk tables showing number at risk over time
+#   - Summary statistics for high vs low groups
+#
+# Analysis Method:
+#   - Median split stratification for high/low group assignment
+#   - Kaplan-Meier survival estimation
+#   - Log-rank test for statistical significance testing
+#   - Customizable plotting parameters and aesthetics
+#
+# Usage:
+#   1. Configure input file paths and parameters in the script
+#   2. Run: Rscript survival_curves.R
+#   3. Review generated survival plots and statistics
+#
+# Dependencies: survival, survminer, ggplot2
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 library(survival)
 library(survminer)

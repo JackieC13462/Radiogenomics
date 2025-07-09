@@ -1,3 +1,41 @@
+# ===============================================================================
+# Reactome Pathway Enrichment Analysis using GSVA
+# ===============================================================================
+# 
+# Purpose: Performs Gene Set Variation Analysis (GSVA) using Reactome pathway
+#          gene sets to calculate enrichment scores for biological pathways
+#          and molecular interactions.
+#
+# Description:
+#   This script calculates sample-wise enrichment scores for Reactome pathways,
+#   which represent manually curated biological pathways based on peer-reviewed
+#   literature. Reactome provides detailed pathway annotations covering various
+#   biological processes, molecular functions, and disease mechanisms.
+#
+# Input Requirements:
+#   1. Gene expression matrix: Genes as rows, samples as columns
+#   2. Reactome pathway gene sets: GMT format file containing pathway definitions
+#   3. Gene identifiers must match between expression data and pathway annotations
+#
+# Output:
+#   - Reactome pathway enrichment score matrix: Pathways as rows, samples as columns
+#   - Enrichment scores reflect pathway activity levels for each sample
+#   - Positive scores indicate pathway activation, negative scores indicate downregulation
+#   - Results prepared for downstream radiogenomic correlation analysis
+#
+# Analysis Method:
+#   - Uses GSVA algorithm for single-sample pathway enrichment scoring
+#   - Applies non-parametric methods for robust score calculation
+#   - Normalizes scores across samples for comparative analysis
+#   - Handles hierarchical pathway structure appropriately
+#
+# Usage:
+#   Rscript reactome_enrichment_GMT.R <input_expression_file> <reactome_gmt_file> <output_file>
+#
+# Dependencies: data.table, GSEABase, GSVA
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages(library(data.table))
 suppressPackageStartupMessages(library(GSEABase))
 suppressPackageStartupMessages(library(GSVA))

@@ -1,3 +1,46 @@
+# ===============================================================================
+# Radiogenomic Correlative Analysis
+# ===============================================================================
+# 
+# Purpose: Performs Spearman correlation analysis between genomic signatures 
+#          (pathway enrichment scores) and radiomic features to identify 
+#          radiogenomic associations.
+#
+# Description:
+#   This script computes pairwise Spearman correlations between filtered genomic
+#   signatures and radiomic features for a specific dataset. It focuses on 
+#   original and transformed radiomic features while excluding diagnostic metadata.
+#   Results include correlation coefficients, p-values, and FDR corrections.
+#
+# Input Requirements:
+#   1. Genomic signatures file: CSV with samples as rows, pathway signatures as columns
+#   2. Radiomic features file: CSV with samples as rows, radiomic features as columns
+#   3. Both files must have matching sample IDs as row names
+#
+# Output:
+#   CSV file containing correlation results:
+#   - Genomic signature names
+#   - Radiomic feature names  
+#   - Spearman correlation coefficients
+#   - P-values and FDR-adjusted p-values
+#   - Sample sizes used for each correlation
+#
+# Analysis Method:
+#   - Uses Spearman rank correlation (non-parametric)
+#   - Filters radiomic features by allowed prefixes (original_, wavelet-, etc.)
+#   - Applies False Discovery Rate (FDR) multiple testing correction
+#   - Handles missing data by pairwise complete observations
+#
+# Usage:
+#   Rscript correlative_analysis.R <genomic_signatures_file> <radiomic_features_file> <dataset_prefix> <output_file>
+#
+# Example:
+#   Rscript correlative_analysis.R HNSCC_KEGG_filtered.csv HNSCC_radiomics_filtered.csv HNSCC HNSCC_KEGG_correlations.csv
+#
+# Dependencies: Standard R libraries (stats, utils)
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 # =========================
 # Radiomic Feature Categories (for reference)
 # =========================

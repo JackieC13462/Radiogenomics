@@ -1,3 +1,50 @@
+# ===============================================================================
+# Radiomics Cox Proportional Hazards Model Analysis
+# ===============================================================================
+# 
+# Purpose: Performs Cox proportional hazards regression analysis using binarized
+#          radiomics features to predict overall survival, while controlling for
+#          clinical covariates (age, gender, tumor stage).
+#
+# Description:
+#   This script takes radiomics features and clinical data as input, filters
+#   radiomics features based on specific prefixes (original_, wavelet-, etc.),
+#   filters clinical data by treatment type, binarizes radiomics features using
+#   median cutoffs, and performs Cox regression analysis to identify radiomics
+#   features associated with survival outcomes.
+#
+# Input Requirements:
+#   1. Radiomics features file: CSV with samples as rows, radiomics features as columns
+#   2. Clinical data file: CSV with clinical variables including:
+#      - cases.submitter_id (sample IDs)
+#      - treatments.treatment_type (treatment categories)
+#      - OS_days (overall survival time in days)
+#      - diagnoses.age_at_diagnosis (age at diagnosis in days)
+#      - demographic.gender (patient gender)
+#      - diagnoses.ajcc_pathologic_stage (tumor stage)
+#
+# Output:
+#   CSV file containing Cox regression results for each radiomics feature:
+#   - Feature name
+#   - Hazard Ratio (HR)
+#   - 95% Confidence Interval bounds
+#   - P-value
+#   - Concordance index (C-index)
+#
+# Analysis Method:
+#   - Filters radiomics features based on allowed prefixes
+#   - Converts age from days to years
+#   - Binarizes radiomics features using median cutoff (>median = 1, ≤median = 0)
+#   - Fits univariate Cox models adjusted for age, gender, and tumor stage
+#   - Calculates hazard ratios and statistical significance
+#
+# Usage:
+#   Rscript Radiomics_cox_model.R <radiomics_features_file> <clinical_data_file> <output_file> <treatment_type>
+#
+# Example:
+#   Rscript Radiomics_cox_model.R radiomics_data.csv clinical_data.csv cox_results.csv "Chemoradiotherapy"
+# ===============================================================================
+
 library(survival)
 library(survminer)
 

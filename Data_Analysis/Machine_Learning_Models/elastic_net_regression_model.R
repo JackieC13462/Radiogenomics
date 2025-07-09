@@ -1,5 +1,42 @@
-# Elastic Net regression with cross-validation and hyperparameter tuning (R version)
-# Matches the structure and input/output of your other ML R scripts
+# ===============================================================================
+# Elastic Net Regression for Radiogenomic Feature Selection and Prediction
+# ===============================================================================
+# 
+# Purpose: Performs Elastic Net regression combining LASSO and Ridge penalties
+#          for robust feature selection and prediction using radiogenomic data.
+#
+# Description:
+#   This script implements Elastic Net regression, which combines the benefits
+#   of LASSO (feature selection) and Ridge (handling correlated features) 
+#   regression. It automatically selects optimal alpha (mixing parameter) and
+#   lambda (penalty strength) through cross-validation for robust model building.
+#
+# Input Requirements:
+#   1. Feature matrix: CSV with samples as rows, features (radiomic/genomic) as columns
+#   2. Clinical outcome data: Continuous or binary target variable
+#   3. Properly formatted data with matching sample IDs
+#
+# Output:
+#   - Selected features with non-zero coefficients
+#   - Optimal hyperparameters (alpha and lambda)
+#   - Cross-validation performance metrics
+#   - Model coefficients and feature importance
+#   - Prediction results and performance evaluation
+#
+# Analysis Method:
+#   - Uses nested cross-validation for hyperparameter tuning
+#   - Alpha parameter controls LASSO vs Ridge balance (0=Ridge, 1=LASSO)
+#   - Lambda parameter controls overall penalty strength
+#   - Evaluates multiple performance metrics (R², RMSE, MAE)
+#
+# Usage:
+#   1. Configure input file paths and parameters in the script
+#   2. Run: Rscript elastic_net_regression_model.R
+#   3. Review optimal parameters and selected features
+#
+# Dependencies: data.table, caret, glmnet
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 library(data.table)
 library(caret)

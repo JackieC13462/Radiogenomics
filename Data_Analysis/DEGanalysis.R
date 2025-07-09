@@ -1,3 +1,42 @@
+# ===============================================================================
+# Differential Gene Expression Analysis using DESeq2
+# ===============================================================================
+# 
+# Purpose: Performs differential gene expression analysis between tumor and normal
+#          tissue samples using DESeq2 for multiple cancer types.
+#
+# Description:
+#   This script takes RNA-seq count data for multiple cancer types and performs
+#   DESeq2 differential expression analysis to identify genes that are significantly
+#   differentially expressed between tumor and normal samples. Results include
+#   log2 fold changes, p-values, and adjusted p-values.
+#
+# Input Requirements:
+#   1. RNA-seq count files: Tab-separated files with genes as rows, samples as columns
+#   2. Sample metadata indicating tumor vs normal status
+#   3. File paths configured in the rna_files list
+#
+# Output:
+#   For each cancer type:
+#   - DESeq2 results table with differential expression statistics
+#   - Normalized count matrices
+#   - Statistical summaries of significant genes
+#
+# Analysis Method:
+#   - Uses DESeq2 for robust differential expression analysis
+#   - Applies variance stabilizing transformation
+#   - Controls for multiple testing using Benjamini-Hochberg correction
+#   - Filters results based on statistical significance and fold change
+#
+# Usage:
+#   1. Update rna_files list with paths to your count data
+#   2. Ensure sample naming follows tumor/normal conventions
+#   3. Run: Rscript DEGanalysis.R
+#
+# Dependencies: DESeq2, data.table
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages({
   library(DESeq2)
   library(data.table)

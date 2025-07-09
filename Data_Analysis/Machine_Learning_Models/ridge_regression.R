@@ -1,5 +1,43 @@
-# Ridge regression with cross-validation and hyperparameter tuning (R version)
-# Matches the structure and input/output of your LASSO and linear regression R scripts
+# ===============================================================================
+# Ridge Regression for Radiogenomic Feature Analysis with Regularization
+# ===============================================================================
+# 
+# Purpose: Performs Ridge regression with L2 regularization to handle correlated
+#          radiogenomic features and prevent overfitting in predictive modeling.
+#
+# Description:
+#   This script implements Ridge regression, which applies L2 penalty to regression
+#   coefficients to handle multicollinearity and reduce overfitting. Unlike LASSO,
+#   Ridge regression retains all features but shrinks coefficients toward zero,
+#   making it ideal for datasets with many correlated features.
+#
+# Input Requirements:
+#   1. Feature matrix: CSV with samples as rows, features (radiomic/genomic) as columns
+#   2. Clinical outcome data: Continuous target variable
+#   3. Properly formatted data with matching sample IDs
+#
+# Output:
+#   - Ridge regression coefficients (shrunk but non-zero)
+#   - Optimal lambda parameter from cross-validation
+#   - Model performance metrics (R², RMSE, MAE)
+#   - Cross-validation results and error curves
+#   - Prediction results on test data
+#
+# Analysis Method:
+#   - Uses cross-validation to select optimal lambda penalty parameter
+#   - Applies L2 regularization to prevent overfitting
+#   - Handles correlated features better than standard linear regression
+#   - Provides stable coefficient estimates
+#   - Evaluates performance using multiple metrics
+#
+# Usage:
+#   1. Configure input file paths and parameters
+#   2. Run: Rscript ridge_regression.R
+#   3. Review optimal lambda and model performance
+#
+# Dependencies: data.table, caret, glmnet
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 library(data.table)
 library(caret)

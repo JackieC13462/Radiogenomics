@@ -1,8 +1,45 @@
-# =========================
-# Genomic Feature Self-Correlation (Spearman) for Single Input File
-# =========================
+# ===============================================================================
+# Genomic Signatures Self-Correlation Analysis
+# ===============================================================================
+# 
+# Purpose: Computes Spearman correlation matrix among genomic signatures within
+#          a single pathway database (KEGG, HALLMARK, REACTOME, or BIOCARTA)
+#          to identify co-regulated pathway groups.
 #
-# This script computes Spearman self-correlation matrix for genomic signature data.
+# Description:
+#   This script calculates pairwise Spearman correlations between all genomic
+#   signatures (pathway enrichment scores) within a dataset to identify which
+#   pathways are co-expressed or co-regulated. High correlations suggest 
+#   functional relationships between pathways.
+#
+# Input Requirements:
+#   1. Genomic signatures file: CSV with samples as rows, pathway signatures as columns
+#   2. File must contain "SampleID" as first column header
+#   3. Pathway signatures should be from a single source (e.g., all KEGG pathways)
+#
+# Output:
+#   CSV file containing self-correlation matrix:
+#   - Square matrix with pathway signatures as both rows and columns
+#   - Spearman correlation coefficients ranging from -1 to +1
+#   - Diagonal values = 1 (perfect self-correlation)
+#   - Used for identifying highly correlated pathway clusters
+#
+# Analysis Method:
+#   - Uses Spearman rank correlation (robust to outliers)
+#   - Computes pairwise complete observations
+#   - Handles missing data appropriately
+#   - Results used downstream for feature filtering
+#
+# Usage:
+#   Rscript genomics_self_correlation.R <genomic_signatures_file> <output_directory> <dataset_prefix>
+#
+# Example:
+#   Rscript genomics_self_correlation.R HNSCC_KEGG_enrichment.csv /outputs/ HNSCC
+#   Output: HNSCC_KEGG_self_correlation.csv
+#
+# Dependencies: Standard R libraries (stats, utils)
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 # The input file should contain enrichment data from one pathway source already separated.
 #
 # Input format: CSV file with samples as rows and pathways as columns (first column = sample IDs)

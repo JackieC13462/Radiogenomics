@@ -1,3 +1,43 @@
+# ===============================================================================
+# UMAP Dimensionality Reduction and Visualization for Cancer Datasets
+# ===============================================================================
+# 
+# Purpose: Performs Uniform Manifold Approximation and Projection (UMAP) 
+#          dimensionality reduction on radiogenomic features to visualize
+#          sample clustering patterns and identify cancer subtypes.
+#
+# Description:
+#   This script applies UMAP algorithm to high-dimensional radiogenomic data
+#   to create 2D visualizations that preserve local and global data structure.
+#   It enables exploration of sample relationships, identification of potential
+#   cancer subtypes, and visualization of feature-based clustering patterns.
+#
+# Input Requirements:
+#   1. Feature matrix: CSV with samples as rows, features (genomic/radiomic) as columns
+#   2. Optional metadata: Clinical variables for sample annotation and coloring
+#   3. High-dimensional data suitable for dimensionality reduction
+#
+# Output:
+#   - Interactive UMAP plots with sample point visualization
+#   - Static plots colored by clinical variables (stage, grade, survival)
+#   - Coordinate files for UMAP embeddings
+#   - Clustering analysis results if requested
+#
+# Visualization Features:
+#   - Interactive plots using plotly for exploration
+#   - Color coding by clinical variables
+#   - Customizable point sizes and transparency
+#   - Optional clustering overlay and annotations
+#
+# Usage:
+#   1. Configure input data paths and parameters
+#   2. Run: Rscript UMAP_cancer.R
+#   3. Explore interactive plots and identify patterns
+#
+# Dependencies: data.table, uwot, ggplot2, plotly
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages({
   library(data.table)
   library(uwot)

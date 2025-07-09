@@ -1,3 +1,43 @@
+# ===============================================================================
+# Unique Sample ID Generator for Radiogenomic Data Integration
+# ===============================================================================
+# 
+# Purpose: Harmonizes sample identifiers between genomic and radiomic datasets
+#          to enable integrated radiogenomic analysis by creating consistent
+#          sample IDs across different data modalities.
+#
+# Description:
+#   This script takes genomic (RNA-seq) and radiomic feature datasets and
+#   standardizes sample identifiers to ensure proper matching between modalities.
+#   It identifies common samples, resolves ID format differences, and outputs
+#   harmonized datasets ready for downstream correlation analysis.
+#
+# Input Requirements:
+#   1. Genomics file: CSV with samples as rows, genes/features as columns
+#   2. Radiomics file: CSV with samples as rows, radiomic features as columns
+#   3. Sample IDs may be in different formats (TCGA submitter IDs, etc.)
+#
+# Output:
+#   1. Harmonized genomics file: Standardized sample IDs with consistent formatting
+#   2. Harmonized radiomics file: Matched sample IDs with corresponding radiomic data
+#   3. Only samples present in both datasets are retained
+#
+# Processing Steps:
+#   - Standardizes sample ID formats (removes prefixes, handles TCGA conventions)
+#   - Identifies overlapping samples between genomic and radiomic datasets
+#   - Filters datasets to include only common samples
+#   - Ensures consistent row/column structure for downstream analysis
+#
+# Usage:
+#   Rscript unique_ID_generator.R <genomics_file> <radiomics_file> <dataset_prefix> <output_directory>
+#
+# Example:
+#   Rscript unique_ID_generator.R HNSCC_RNAseq.csv HNSCC_radiomics.csv HNSCC /outputs/
+#
+# Dependencies: data.table
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
+
 suppressPackageStartupMessages(library(data.table))
 
 # ---- USER INPUTS ----

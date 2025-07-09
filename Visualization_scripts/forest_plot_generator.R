@@ -1,8 +1,42 @@
-# =========================
-# Forest Plot Generator for Genomic Signatures
-# =========================
+# ===============================================================================
+# Forest Plot Generator for Cox Regression Results Visualization
+# ===============================================================================
+# 
+# Purpose: Creates publication-ready forest plots to visualize Cox proportional
+#          hazards regression results, showing hazard ratios with confidence
+#          intervals for genomic signatures and radiomic features.
 #
-# This script loops through multiple input CSVs, selects the top 20 FDR-significant signatures,
+# Description:
+#   This script processes Cox regression results and generates forest plots
+#   displaying hazard ratios, confidence intervals, and p-values for the most
+#   statistically significant features. It automatically selects top features
+#   based on FDR-corrected p-values and creates professional visualizations.
+#
+# Input Requirements:
+#   1. Cox regression results: CSV files containing hazard ratios, confidence intervals, p-values
+#   2. Multiple input files can be processed in batch
+#   3. Required columns: Feature names, HR, CI_lower, CI_upper, p-values
+#
+# Output:
+#   - Forest plot visualizations (PDF/PNG format)
+#   - Hazard ratios with 95% confidence intervals
+#   - Statistical significance indicators
+#   - Feature rankings by effect size and significance
+#
+# Visualization Features:
+#   - Selects top 20 FDR-significant features per dataset
+#   - Displays hazard ratios with confidence intervals
+#   - Color-codes by statistical significance
+#   - Professional formatting for publication
+#
+# Usage:
+#   1. Configure input file paths and selection criteria
+#   2. Run: Rscript forest_plot_generator.R
+#   3. Review generated forest plots
+#
+# Dependencies: ggplot2, forestplot, dplyr
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 # and generates a forest plot for each. The y-axis is the signature, x-axis is HR, box size is -log10(FDR),
 # and error bars are standard error (SE). Input columns: 'Signature', 'HR', 'FDR', 'CI_lower', 'CI_upper'.
 #

@@ -1,5 +1,45 @@
-# cox_visualization.R
-# Visualize Cox model results: HR distribution, top features, correlation with radiomics, and treatment outcome distribution
+# ===============================================================================
+# Cox Proportional Hazards Model Results Visualization Suite
+# ===============================================================================
+# 
+# Purpose: Creates comprehensive visualizations for Cox regression analysis results
+#          including hazard ratio distributions, top feature rankings, radiogenomic
+#          correlations, and treatment outcome comparisons.
+#
+# Description:
+#   This script generates multiple visualization types to explore and present
+#   Cox proportional hazards model results. It creates publication-ready plots
+#   showing feature importance, statistical significance patterns, and clinical
+#   relevance of radiogenomic signatures in survival analysis.
+#
+# Input Requirements:
+#   1. Cox regression results: CSV files with hazard ratios, p-values, confidence intervals
+#   2. Radiogenomic correlation data: Optional correlation matrices
+#   3. Clinical outcome data: Treatment types and survival information
+#
+# Output Visualizations:
+#   - Hazard ratio distribution histograms
+#   - Top significant features ranked by effect size
+#   - Volcano plots showing HR vs statistical significance
+#   - Correlation heatmaps between genomic and radiomic features
+#   - Treatment outcome distribution plots
+#   - Combined multi-panel figures for comprehensive analysis
+#
+# Visualization Types:
+#   - Statistical distributions and summaries
+#   - Feature ranking and importance plots
+#   - Correlation network visualizations
+#   - Clinical outcome stratifications
+#   - Publication-ready multi-panel figures
+#
+# Usage:
+#   1. Configure input file paths and visualization parameters
+#   2. Run: Rscript cox_visualization.R
+#   3. Review generated plots and select for publication
+#
+# Dependencies: ggplot2, data.table, corrplot, cowplot
+# Author: Radiogenomics Analysis Pipeline
+# ===============================================================================
 
 library(ggplot2)
 library(data.table)
