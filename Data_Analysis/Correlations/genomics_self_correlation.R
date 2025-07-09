@@ -1,9 +1,20 @@
 # =========================
-# Genomic Feature Self-Correlation (Spearman) by Pathway Source
+# Genomic Feature Self-Correlation (Spearman) for Single Input File
 # =========================
+#
+# This script computes Spearman self-correlation matrix for genomic signature data.
+# The input file should contain enrichment data from one pathway source already separated.
+#
+# Input format: CSV file with samples as rows and pathways as columns (first column = sample IDs)
+#               This should be an output file from enrichment_separator.R
+# Output: One self-correlation matrix CSV file
+#
+# Usage: Rscript genomics_self_correlation.R <genomics_file> <output_dir> <prefix>
+#
 
 suppressPackageStartupMessages({
   library(data.table)
+  library(tools)
 })
 
 cat("Starting genomics self-correlation script...\n")
@@ -13,62 +24,79 @@ cat("Starting genomics self-correlation script...\n")
 # =========================
 args <- commandArgs(trailingOnly = TRUE)
 if (length(args) != 3) {
-  stop("Usage: Rscript genomics_self_correlation.R <input_genomics.csv> <prefix> <output_dir>")
+  stop("Usage: Rscript genomics_self_correlation.R <genomics_file> <output_dir> <prefix>")
 }
-input_genomics <- args[1]
-prefix <- args[2]
-output_dir <- args[3]
-cat("Input genomics file:", input_genomics, "\n")
-cat("Prefix:", prefix, "\n")
+
+genomics_file <- args[1]
+output_dir <- args[2]
+prefix <- args[3]
+
+cat("Input genomics file:", genomics_file, "\n")
 cat("Output directory:", output_dir, "\n")
+cat("Prefix:", prefix, "\n")
+
 if (!dir.exists(output_dir)) {
   dir.create(output_dir, recursive = TRUE)
   cat("Created output directory:", output_dir, "\n")
 }
 
 # =========================
-# Read Data
+# Process Input File
 # =========================
-cat("Reading genomics data...\n")
-genomic_matrix <- fread(input_genomics, data.table = FALSE)
-cat("Genomics data dimensions (including ID column):", dim(genomic_matrix), "\n")
+cat("\n=== Processing genomics file:", genomics_file, "===\n")
+
+# Extract source name from filename
+file_basename <- basename(tools::file_path_sans_ext(genomics_file))
+# Try to extract source from filename (e.g., KEGG, HALLMARK, REACTOME, BIOCARTA)
+source_name <- NULL
+for (src in c("kegg", "hallmark", "reactome", "biocarta")) {
+  if (grepl(src, file_basename, ignore.case = TRUE)) {
+    source_name <- toupper(src)  # Convert to uppercase
+    break
+  }
+}
+if (is.null(source_name)) {
+  source_name <- "GENOMICS"
+}
+cat("Identified source:", source_name, "\n")
+
+# Read genomics data
+cat("Reading genomics data from:", genomics_file, "\n")
+genomic_matrix <- fread(genomics_file, data.table = FALSE)
+cat("Genomics data dimensions (including sample ID column):", dim(genomic_matrix), "\n")
+
+# The input files from enrichment_separator.R have samples as rows and pathways as columns
+# First column should be sample IDs (with "SampleID" header), set as row names and remove it
 rownames(genomic_matrix) <- genomic_matrix[[1]]
 genomic_matrix <- genomic_matrix[, -1, drop = FALSE]
-cat("Genomics matrix dimensions (pathways x samples):", dim(genomic_matrix), "\n")
+cat("Genomics matrix dimensions (samples x pathways):", dim(genomic_matrix), "\n")
 
-# =========================
-# Pathway source patterns
-# =========================
-sources <- c("KEGG", "HALLMARKS", "REACTOME", "BIOCARTA")
+# Ensure all values are numeric
+cat("Converting all values to numeric...\n")
+genomic_matrix[] <- lapply(genomic_matrix, function(x) as.numeric(as.character(x)))
 
-for (source in sources) {
-  cat("\nProcessing pathway group:", source, "\n")
-  # Identify pathway rows for this source
-  source_rows <- grepl(source, rownames(genomic_matrix), ignore.case = TRUE)
-  cat("Number of pathways found for", source, ":", sum(source_rows), "\n")
-  if (!any(source_rows)) {
-    cat("No pathways found for", source, "\n")
-    next
-  }
-  # Subset matrix for this source
-  sub_mat <- genomic_matrix[source_rows, , drop = FALSE]
-  cat("Subset matrix dimensions (pathways x samples):", dim(sub_mat), "\n")
-  # Transpose: pathways x samples -> samples x pathways
-  sub_mat <- t(sub_mat)
-  sub_mat <- as.data.frame(sub_mat)
-  cat("Transposed matrix dimensions (samples x pathways):", dim(sub_mat), "\n")
-  # Ensure all values are numeric
-  cat("Converting all values to numeric...\n")
-  sub_mat[] <- lapply(sub_mat, function(x) as.numeric(as.character(x)))
-  # Compute correlation if enough features
-  if (ncol(sub_mat) >= 2) {
-    cat("Computing Spearman self-correlation matrix for", source, "...\n")
-    cor_mat <- cor(sub_mat, method = "spearman", use = "pairwise.complete.obs")
-    out_file <- file.path(output_dir, paste0(prefix, "_", source, "_self_correlation.csv"))
-    write.csv(cor_mat, file = out_file, row.names = TRUE)
-    cat("Self-correlation matrix saved for", source, "at", out_file, "\n")
-  } else {
-    cat("Not enough features (columns) for correlation analysis in", source, "\n")
-  }
+# Compute correlation if enough features
+if (ncol(genomic_matrix) >= 2) {
+  cat("Computing Spearman self-correlation matrix for", source_name, "...\n")
+  cor_mat <- cor(genomic_matrix, method = "spearman", use = "pairwise.complete.obs")
+  cat("Correlation matrix dimensions:", dim(cor_mat), "\n")
+  
+  # Save correlation matrix
+  out_file <- file.path(output_dir, paste0(prefix, "_", source_name, "_self_correlation.csv"))
+  write.csv(cor_mat, file = out_file, row.names = TRUE)
+  cat("Self-correlation matrix saved for", source_name, "at", out_file, "\n")
+  
+  # Print summary statistics
+  cor_values <- cor_mat[upper.tri(cor_mat)]
+  cat("Correlation summary for", source_name, ":\n")
+  cat("  Number of correlation pairs:", length(cor_values), "\n")
+  cat("  Mean correlation:", round(mean(cor_values, na.rm = TRUE), 3), "\n")
+  cat("  Median correlation:", round(median(cor_values, na.rm = TRUE), 3), "\n")
+  cat("  Min correlation:", round(min(cor_values, na.rm = TRUE), 3), "\n")
+  cat("  Max correlation:", round(max(cor_values, na.rm = TRUE), 3), "\n")
+  
+} else {
+  cat("Not enough pathways for correlation analysis in", source_name, "\n")
+  cat("Number of pathways:", ncol(genomic_matrix), "(minimum 2 required)\n")
 }
 cat("Genomics self-correlation script complete.\n")
