@@ -25,7 +25,7 @@
 # Usage:
 #   Rscript clinical_correlations.R <clinical_file> <output_prefix> <genomic_file1> <genomic_file2> ... <genomic_fileN>
 #   
-#   Output files will be named: <output_prefix>_<dataset_name>.csv and <output_prefix>_<dataset_name>_filtered.csv
+#   Output files will be named: <output_prefix>_<source group>_clinical_correlation.csv and <output_prefix>_<source group>_clinical_correlation_filtered.csv
 #
 # ===============================================================================
 
