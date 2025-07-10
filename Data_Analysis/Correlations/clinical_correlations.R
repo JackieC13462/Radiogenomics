@@ -13,7 +13,7 @@
 # Output:
 #   For each genomic dataset:
 #     1. Full correlation results CSV: All correlations with p-values and adjusted p-values
-#     2. Filtered correlation results CSV: Only correlations with |r| > 0.7 AND p < 0.1
+#     (Use clinical_correlation_filter.R for filtering by correlation strength and significance)
 #
 # Analysis Method:
 #   - Uses Spearman rank correlation (non-parametric)
@@ -25,7 +25,7 @@
 # Usage:
 #   Rscript clinical_correlations.R <clinical_file> <output_prefix> <genomic_file1> <genomic_file2> ... <genomic_fileN>
 #   
-#   Output files will be named: <output_prefix>_<source group>_clinical_correlation.csv and <output_prefix>_<source group>_clinical_correlation_filtered.csv
+#   Output files will be named: <output_prefix>_<source group>_clinical_correlations.csv
 #
 # ===============================================================================
 
@@ -81,14 +81,45 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     # Load genomic signature dataset
     genomic_data <- fread(genomic_file, data.table = FALSE, check.names = FALSE)
     
+    # Debug: Check data structure after loading
+    cat("Initial genomic data dimensions:", nrow(genomic_data), "x", ncol(genomic_data), "\n")
+    if (ncol(genomic_data) > 0) {
+      n_cols_to_show <- min(5, ncol(genomic_data))
+      cat("First few column names:", paste(colnames(genomic_data)[seq_len(n_cols_to_show)], collapse = ", "), "\n")
+    }
+    cat("First column class:", class(genomic_data[[1]]), "\n")
+    
     # Set sample IDs as rownames and remove the ID column
     rownames(genomic_data) <- genomic_data[[1]]
     genomic_data[[1]] <- NULL
     
+    # Debug: Check data structure after removing ID column
+    cat("Genomic data dimensions after ID removal:", nrow(genomic_data), "x", ncol(genomic_data), "\n")
+    if (ncol(genomic_data) > 0) {
+      n_cols_to_check <- min(5, ncol(genomic_data))
+      cat("Column classes (first 5):", paste(sapply(genomic_data[seq_len(n_cols_to_check)], class), collapse = ", "), "\n")
+    }
+    
+    # Check if all remaining columns can be converted to numeric
+    numeric_check <- sapply(genomic_data, function(x) {
+      test_numeric <- suppressWarnings(as.numeric(as.character(x)))
+      !all(is.na(test_numeric)) || all(is.na(x))  # TRUE if convertible to numeric OR already all NA
+    })
+    cat("Number of columns that can be converted to numeric:", sum(numeric_check), "out of", ncol(genomic_data), "\n")
+    
+    if (sum(numeric_check) < ncol(genomic_data)) {
+      cat("Warning: Some columns cannot be converted to numeric. Column types:\n")
+      non_numeric_cols <- names(genomic_data)[!numeric_check]
+      if (length(non_numeric_cols) > 0) {
+        n_cols_to_show <- min(10, length(non_numeric_cols))
+        cat("Non-numeric columns:", paste(non_numeric_cols[seq_len(n_cols_to_show)], collapse = ", "), "\n")
+      }
+    }
+    
     # Extract dataset name from filename for labeling
     dataset_name <- tools::file_path_sans_ext(basename(genomic_file))
     
-    # Extract source group (KEGG, HALLMARK, REACTOME, BIOCARTA) from filename
+    # Extract source group (KEGG, HALLMARK, REACTOME, BIOCARTA, radiomics) from filename
     source_group <- NA
     if (grepl("KEGG", dataset_name, ignore.case = TRUE)) {
       source_group <- "KEGG"
@@ -98,6 +129,8 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
       source_group <- "REACTOME"
     } else if (grepl("BIOCARTA", dataset_name, ignore.case = TRUE)) {
       source_group <- "BIOCARTA"
+    } else if (grepl("radiomics", dataset_name, ignore.case = TRUE)) {
+      source_group <- "radiomics"
     }
     
     if (is.na(source_group)) {
@@ -123,10 +156,64 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     genomic_subset <- genomic_data[common_samples, , drop = FALSE]
     os_days_subset <- os_days_valid[common_samples]
     
-    # Remove genomic signatures that have all missing values or no variance
-    valid_signatures <- apply(genomic_subset, 2, function(x) {
-      !all(is.na(x)) && var(x, na.rm = TRUE) > 0
+    # First, filter out any non-numeric columns
+    numeric_columns <- sapply(genomic_subset, function(x) {
+      test_numeric <- suppressWarnings(as.numeric(as.character(x)))
+      !all(is.na(test_numeric)) || all(is.na(x))  # TRUE if convertible to numeric OR already all NA
     })
+    
+    if (sum(numeric_columns) == 0) {
+      cat("Warning: No numeric columns found in", dataset_name, ". Skipping...\n")
+      next
+    }
+    
+    if (sum(numeric_columns) < ncol(genomic_subset)) {
+      cat("Filtering out", ncol(genomic_subset) - sum(numeric_columns), "non-numeric columns\n")
+      genomic_subset <- genomic_subset[, numeric_columns, drop = FALSE]
+    }
+    
+    # Remove genomic signatures that have all missing values or no variance
+    cat("Checking genomic signatures for validity...\n")
+    cat("Genomic subset dimensions:", nrow(genomic_subset), "x", ncol(genomic_subset), "\n")
+    
+    if (ncol(genomic_subset) == 0) {
+      cat("Warning: No genomic signatures found in", dataset_name, ". Skipping...\n")
+      next
+    }
+    
+    valid_signatures <- apply(genomic_subset, 2, function(x) {
+      # Convert to numeric first, handling any non-numeric values
+      x_numeric <- suppressWarnings(as.numeric(x))
+      # Check if all values are NA after conversion
+      if (all(is.na(x_numeric))) {
+        return(FALSE)
+      }
+      # Check if there's sufficient variance
+      variance <- var(x_numeric, na.rm = TRUE)
+      if (is.na(variance) || variance == 0) {
+        return(FALSE)
+      }
+      return(TRUE)
+    })
+    
+    # Debug: Print information about valid signatures
+    cat("Total signatures before filtering:", ncol(genomic_subset), "\n")
+    cat("Valid signatures after filtering:", sum(valid_signatures), "\n")
+    cat("Valid signatures logical vector length:", length(valid_signatures), "\n")
+    cat("Names of valid signatures (first 10):", paste(names(valid_signatures)[valid_signatures][1:min(10, sum(valid_signatures))], collapse = ", "), "\n")
+    
+    # Check if any signatures are valid
+    if (sum(valid_signatures) == 0) {
+      cat("Warning: No valid genomic signatures found in", dataset_name, ". Skipping...\n")
+      next
+    }
+    
+    # Additional safety check - ensure we have valid column indices
+    if (length(valid_signatures) != ncol(genomic_subset)) {
+      cat("Error: Mismatch between valid_signatures length (", length(valid_signatures), 
+          ") and genomic_subset columns (", ncol(genomic_subset), "). Skipping...\n")
+      next
+    }
     
     genomic_final <- genomic_subset[, valid_signatures, drop = FALSE]
     cat("Number of valid genomic signatures in", dataset_name, ":", ncol(genomic_final), "\n")
@@ -145,7 +232,9 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     # Initialize results data frame for current dataset
     correlation_results <- data.frame(
       Signature = character(),
-      Clinical_Outcome = character(),
+      Sample_Count = numeric(),
+      Mean_OS_Days = numeric(),
+      OS_Days_Range = character(),
       Correlation = numeric(),
       P_value = numeric(),
       stringsAsFactors = FALSE
@@ -175,10 +264,19 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
       rho <- cor_test$estimate    # Correlation coefficient
       pval <- cor_test$p.value    # Statistical significance
       
-      # Store correlation results for current dataset
+      # Calculate summary statistics for the OS_days values used in this correlation
+      sample_count <- length(y_valid)
+      mean_os_days <- round(mean(y_valid, na.rm = TRUE), 2)
+      min_os_days <- round(min(y_valid, na.rm = TRUE), 2)
+      max_os_days <- round(max(y_valid, na.rm = TRUE), 2)
+      os_range <- paste0(min_os_days, "-", max_os_days)
+      
+      # Store one correlation result per signature
       correlation_results <- rbind(correlation_results, data.frame(
         Signature = signature_name,
-        Clinical_Outcome = "OS_days",
+        Sample_Count = sample_count,
+        Mean_OS_Days = mean_os_days,
+        OS_Days_Range = os_range,
         Correlation = rho,
         P_value = pval,
         stringsAsFactors = FALSE
@@ -214,7 +312,6 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     }
     
     dataset_output_file <- paste0(cancer_prefix, "_", source_group, "_clinical_correlations.csv")
-    dataset_filtered_file <- paste0(cancer_prefix, "_", source_group, "_clinical_correlations_filtered.csv")
     
     # Display debug information: top correlations for current dataset
     cat("Top 10 correlation results for", dataset_name, ":\n")
@@ -224,16 +321,6 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     write.csv(correlation_results, dataset_output_file, row.names = FALSE, quote = FALSE)
     cat("Full correlation results for", dataset_name, "saved to:", dataset_output_file, "\n")
     
-    # Create filtered subset: strong correlations with statistical significance
-    # Criteria: |correlation| > 0.7 (strong association) AND p-value < 0.1 (significant)
-    filtered_results <- correlation_results[
-      abs(correlation_results$Correlation) > 0.7 & correlation_results$P_value < 0.05, 
-    ]
-    
-    # Save filtered results for current dataset
-    write.csv(filtered_results, dataset_filtered_file, row.names = FALSE, quote = FALSE)
-    cat("Filtered correlation results for", dataset_name, "saved to:", dataset_filtered_file, "\n")
-    
     # =============================================================================
     # Summary Statistics for Current Dataset
     # =============================================================================
@@ -242,19 +329,22 @@ perform_clinical_correlations <- function(clinical_file, genomic_files, output_p
     cat("  Total signatures analyzed:", nrow(correlation_results), "\n")
     cat("  Significant correlations (adjusted p < 0.05):", sum(correlation_results$P_value_adjusted < 0.05), "\n")
     cat("  Strong correlations (|r| > 0.3):", sum(abs(correlation_results$Correlation) > 0.3), "\n")
-    cat("  High correlations (|r| > 0.7, p < 0.05):", nrow(filtered_results), "\n")
-    cat("  Range of correlations:", round(min(correlation_results$Correlation), 3), "to", 
-        round(max(correlation_results$Correlation), 3), "\n")
+    cat("  Very strong correlations (|r| > 0.7):", sum(abs(correlation_results$Correlation) > 0.7), "\n")
+    if (nrow(correlation_results) > 0) {
+      cat("  Range of correlations:", round(min(correlation_results$Correlation), 3), "to", 
+          round(max(correlation_results$Correlation), 3), "\n")
+      cat("  Sample count range:", min(correlation_results$Sample_Count), "to", 
+          max(correlation_results$Sample_Count), "samples per signature\n")
+    }
     
-    # Display filtered results if any meet the criteria
-    if (nrow(filtered_results) > 0) {
-      cat("\nFiltered Results Preview for", dataset_name, ":\n")
-      print(filtered_results)
-    } else {
-      cat("No correlations met the filtering criteria (|r| > 0.7 AND p < 0.05) for", dataset_name, "\n")
+    # Display top correlations preview
+    if (nrow(correlation_results) > 0) {
+      cat("\nTop Correlation Results for", dataset_name, ":\n")
+      print(head(correlation_results, 5))
     }
     
     cat("Completed analysis for", dataset_name, ": analyzed", ncol(genomic_final), "signatures\n")
+    cat("Use clinical_correlation_filter.R to filter results by correlation strength and significance.\n")
   }
   
   cat("\nAll datasets processed successfully.\n")
@@ -273,7 +363,7 @@ if (length(args) < 3) {
 
 clinical_file <- args[1]           # Path to clinical data CSV file
 output_prefix <- args[2]           # Prefix for output correlation results CSV files
-genomic_files <- args[3:length(args)]  # Paths to genomic signatures CSV files
+genomic_files <- args[3:length(args)]  # Paths to genomic/radiomics signatures CSV files
 
 cat("Clinical data file:", clinical_file, "\n")
 cat("Output prefix:", output_prefix, "\n")
@@ -293,8 +383,9 @@ cat("Analysis completed.\n")
 # 
 # This will create output files like:
 # - correlation_results_kegg_signatures.csv
-# - correlation_results_kegg_signatures_filtered.csv
-# - correlation_results_hallmark_signatures.csv  
-# - correlation_results_hallmark_signatures_filtered.csv
+# - correlation_results_hallmark_signatures.csv
 # - etc.
+# 
+# Use clinical_correlation_filter.R to filter results:
+# Rscript clinical_correlation_filter.R *.csv --cor_threshold 0.7 --p_threshold 0.05
 # ===============================================================================
