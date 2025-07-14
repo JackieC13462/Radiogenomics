@@ -15,12 +15,14 @@ datasets:
   # - name: GBM
   #   genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/GBM_compiled_enrichment.csv"
   #   radiomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/GBM_radiomics.csv"
-  # - name: CCRCC
-  #   genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/CCRCC_compiled_enrichment.csv"
-  #   radiomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/CCRCC_radiomics.csv"
-  # - name: PDA
-  #   genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/PDA_compiled_enrichment.csv"
-  #   radiomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/PDA_radiomics.csv"
+  - name: CCRCC
+    genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/CCRCC_compiled_enrichment.csv"
+    radiomics_file: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-CCRCC/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+    clinical_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/CCRCC_radiomics.csv"
+  - name: PDA
+    genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/PDA_compiled_enrichment.csv"
+    radiomics_file: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-PDA/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+    clinical_file: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/PDA_combined_clinical_data.csv"
   # - name: NSCLC
   #   genomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/gene_signatures/NSCLC_compiled_enrichment.csv"
   #   radiomics_file: "/cluster/projects/bhklab/procdata/Radiogenomics/radiomics/NSCLC_radiomics.csv"
