@@ -323,5 +323,4 @@ The Cox regression results serve as input for:
 - Last Updated: July 2025
 
 ## References
-- Cox, D. R. (1972). Regression models and life-tables. Journal of the Royal Statistical Society, 34(2), 187-220.
-- Benjamini, Y., & Hochberg, Y. (1995). Controlling the false discovery rate: a practical and powerful approach to multiple testing. Journal of the Royal Statistical Society, 57(1), 289-300.
+
