@@ -217,6 +217,7 @@ The compiled enrichment scores serve as input for:
 - Julia Nguyen
 
 ## Version
-- Pipeline Version: 2024.1
-- MSigDB Version: v2024.1
+- Pipeline Version: 2025.1
+- MSigDB Version:  May 2024 v2024.1.Hs (https://www.gsea-msigdb.org/gsea/msigdb/collections.jsp)
+- Created: May 2025
 - Last Updated: July 2025
