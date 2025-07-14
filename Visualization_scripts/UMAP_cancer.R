@@ -47,16 +47,16 @@ suppressPackageStartupMessages({
 
 # ---- USER INPUTS ----
 rna_files <- list(
-  BRCA = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/BRCA_filtered_TPM.csv",
-  KIRC = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/KIRC_filtered_TPM.csv",
-  LGG = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/LGG_filtered_TPM.csv",
-  GBM = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/GBM_filtered_TPM.csv",
-  CCRCC = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/CCRCC_filtered_TPM.csv",
-  HNSCC = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/HNSCC_filtered_TPM.csv",
-  PDA = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/PDA_filtered_TPM.csv"
+  BRCA = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/BRCA_filtered_TPM.csv",
+  KIRC = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/KIRC_filtered_TPM.csv",
+  LGG = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/LGG_filtered_TPM.csv",
+  GBM = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/GBM_filtered_TPM.csv",
+  CCRCC = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/CCRCC_filtered_TPM.csv",
+  HNSCC = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/HNSCC_filtered_TPM.csv",
+  PDA = "/Users/jackie-mac/Desktop/VSCode/data/RNAseq/PDA_filtered_TPM.csv"
   #NSCLC = "/Users/jackie-mac/Desktop/VSCode/Outputs/Filtered_RNAseq/Protein_coding/MissingRemoved/TPM_Normalized/NSCLC_filtered_TPM.csv"
 )
-output_umap_plot <- "/Users/jackie-mac/Desktop/VSCode/Outputs/umap_cancertype_plot.png"
+output_umap_plot <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/UMAP/umap_by_cancertype_plot.png"
 
 # ---- CONSORTIUM LABELS ----
 tcga_cancers <- c("BRCA", "GBM", "KIRC", "LGG")

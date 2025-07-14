@@ -12,6 +12,7 @@
 #   3. Filters highly correlated features to reduce redundancy
 #   4. Performs radiogenomic correlation analysis for each pathway group
 #   5. Analyzes clinical correlations with genomic signatures
+#   6. Filters clinical correlation results based on correlation strength and p-value thresholds
 # ===============================================================================
 
 # Define config variables for input/output locations
@@ -41,7 +42,9 @@ rule all:
         expand(OUTDIR + "{prefix}_REACTOME_clinical_correlations.csv", prefix=COHORTS),
         expand(OUTDIR + "{prefix}_REACTOME_clinical_correlations_filtered.csv", prefix=COHORTS),
         expand(OUTDIR + "{prefix}_BIOCARTA_clinical_correlations.csv", prefix=COHORTS),
-        expand(OUTDIR + "{prefix}_BIOCARTA_clinical_correlations_filtered.csv", prefix=COHORTS)
+        expand(OUTDIR + "{prefix}_BIOCARTA_clinical_correlations_filtered.csv", prefix=COHORTS),
+        expand(OUTDIR + "{prefix}_radiomics_clinical_correlations.csv", prefix=COHORTS),
+        expand(OUTDIR + "{prefix}_radiomics_clinical_correlations_filtered.csv", prefix=COHORTS)
 
 rule unique_ID_generator:
     input:
@@ -316,16 +319,14 @@ rule clinical_correlation_analysis:
         hallmark = OUTDIR + "{prefix}_HALLMARK_features_filtered.csv",
         reactome = OUTDIR + "{prefix}_REACTOME_features_filtered.csv",
         biocarta = OUTDIR + "{prefix}_BIOCARTA_features_filtered.csv",
-        clinical = OUTDIR + "{prefix}_harmonized_clinical.csv"
+        clinical = OUTDIR + "{prefix}_harmonized_clinical.csv",
+        radiomics = OUTDIR + "{prefix}_radiomics_features_filtered.csv"
     output:
         kegg_full = OUTDIR + "{prefix}_KEGG_clinical_correlations.csv",
-        kegg_filtered = OUTDIR + "{prefix}_KEGG_clinical_correlations_filtered.csv",
         hallmark_full = OUTDIR + "{prefix}_HALLMARK_clinical_correlations.csv",
-        hallmark_filtered = OUTDIR + "{prefix}_HALLMARK_clinical_correlations_filtered.csv",
         reactome_full = OUTDIR + "{prefix}_REACTOME_clinical_correlations.csv",
-        reactome_filtered = OUTDIR + "{prefix}_REACTOME_clinical_correlations_filtered.csv",
         biocarta_full = OUTDIR + "{prefix}_BIOCARTA_clinical_correlations.csv",
-        biocarta_filtered = OUTDIR + "{prefix}_BIOCARTA_clinical_correlations_filtered.csv"
+        radiomics_full = OUTDIR + "{prefix}_radiomics_clinical_correlations.csv"
     params:
         prefix = "{prefix}",
         outdir = lambda wildcards: OUTDIR.format(prefix=wildcards.prefix),
@@ -338,5 +339,38 @@ rule clinical_correlation_analysis:
         """
         module load R
         mkdir -p {params.outdir}
-        Rscript {RSCRIPTDIR}clinical_correlations.R {input.clinical} {params.output_prefix} {input.kegg} {input.hallmark} {input.reactome} {input.biocarta}
+        Rscript {RSCRIPTDIR}clinical_correlations.R {input.clinical} {params.output_prefix} {input.kegg} {input.hallmark} {input.reactome} {input.biocarta} {input.radiomics}
+        """
+
+rule clinical_correlation_filtering:
+    input:
+        kegg_full = OUTDIR + "{prefix}_KEGG_clinical_correlations.csv",
+        hallmark_full = OUTDIR + "{prefix}_HALLMARK_clinical_correlations.csv",
+        reactome_full = OUTDIR + "{prefix}_REACTOME_clinical_correlations.csv",
+        biocarta_full = OUTDIR + "{prefix}_BIOCARTA_clinical_correlations.csv",
+        radiomics_full = OUTDIR + "{prefix}_radiomics_clinical_correlations.csv"
+    output:
+        kegg_filtered = OUTDIR + "{prefix}_KEGG_clinical_correlations_filtered.csv",
+        hallmark_filtered = OUTDIR + "{prefix}_HALLMARK_clinical_correlations_filtered.csv",
+        reactome_filtered = OUTDIR + "{prefix}_REACTOME_clinical_correlations_filtered.csv",
+        biocarta_filtered = OUTDIR + "{prefix}_BIOCARTA_clinical_correlations_filtered.csv",
+        radiomics_filtered = OUTDIR + "{prefix}_radiomics_clinical_correlations_filtered.csv"
+    params:
+        prefix = "{prefix}",
+        outdir = lambda wildcards: OUTDIR.format(prefix=wildcards.prefix)
+    resources:
+        mem_mb=4000,
+        runtime="00:30:00",
+        cpus=1
+    shell:
+        """
+        module load R
+        mkdir -p {params.outdir}
+        Rscript {RSCRIPTDIR}clinical_correlation_filter.R \
+            0.35 1 \
+            {input.kegg_full} \
+            {input.hallmark_full} \
+            {input.reactome_full} \
+            {input.biocarta_full} \
+            {input.radiomics_full}
         """
