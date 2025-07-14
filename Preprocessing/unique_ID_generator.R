@@ -66,8 +66,20 @@ radiomics <- fread(radiomics_file, data.table = FALSE, quote = "\"", check.names
 # ---- AUTO-DETECT RELEVANT COLUMNS ----
 # For radiomics: patient_ID is always the first column, UID is auto-detected
 radiomics_patient_col <- colnames(radiomics)[1]
+
+# Priority search for segmentation UID column: seg_series_UID first, then SeriesInstanceUID_mask
 radiomics_uid_col <- grep("seg_series_UID", colnames(radiomics), ignore.case = TRUE, value = TRUE)[1]
-if (is.na(radiomics_uid_col)) stop("No seg_series_UID column found in radiomics file.")
+if (is.na(radiomics_uid_col)) {
+  cat("seg_series_UID column not found, searching for SeriesInstanceUID_mask...\n")
+  radiomics_uid_col <- grep("SeriesInstanceUID_mask", colnames(radiomics), ignore.case = TRUE, value = TRUE)[1]
+  if (is.na(radiomics_uid_col)) {
+    stop("Neither seg_series_UID nor SeriesInstanceUID_mask column found in radiomics file.")
+  } else {
+    cat("Using SeriesInstanceUID_mask as segmentation UID column.\n")
+  }
+} else {
+  cat("Using seg_series_UID as segmentation UID column.\n")
+}
 
 # ---- STORE GENOMICS SAMPLE IDS (COLUMN NAMES, EXCLUDING FIRST COLUMN) ----
 genomics_sample_ids <- colnames(genomics_clean)[-1]
