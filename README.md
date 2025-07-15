@@ -64,12 +64,12 @@ Radiogenomics/
 
 ## Data Sources
 
-- **The Cancer Genome Atlas (TCGA)**: Multi-cancer genomic and clinical data
-- **Clinical Proteomic Tumor Analysis Consortium (CPTAC)**: Integrated multi-omics datasets
-- **MSigDB (Molecular Signatures Database)**: RNA-sequencing gene expression data
+- **The Cancer Genome Atlas (TCGA)**: Multi-cancer genomic data
+- **Clinical Proteomic Tumor Analysis Consortium (CPTAC)**: CPTAC3 study (CCRCC, HNSCC and PDA)
+- **MSigDB (Molecular Signatures Database)**: RNA-sequencing tumour gene expression data
 - **TCIA (The Cancer Imaging Archive)**: Medical imaging data for radiomic feature extraction
 - **NIH GDC (Genomic Data Commons)**: Clinical data including treatment information and survival outcomes for each cancer type
-- **NSCLC Dataset**: Independent non-small cell lung cancer data source
+- **NSCLC Dataset**: Independent radiogenomics non-small cell lung cancer data source
 
 ### Data Processing Tools
 - **Pyradiomics**: Feature extraction from medical image segmentation data for quantitative radiomic analysis
