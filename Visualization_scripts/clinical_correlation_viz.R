@@ -49,22 +49,22 @@ suppressPackageStartupMessages({
 
 # Clinical correlation files
 clinical_files <- list(
-  KEGG = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_KEGG_clinical_correlations_filtered.csv",
-  HALLMARK = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_HALLMARK_clinical_correlations_filtered.csv", 
-  REACTOME = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_REACTOME_clinical_correlations_filtered.csv",
-  BIOCARTA = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_BIOCARTA_clinical_correlations_filtered.csv"
+  KEGG = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_KEGG_clinical_correlations_filtered.csv",
+  HALLMARK = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_HALLMARK_clinical_correlations_filtered.csv", 
+  REACTOME = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_REACTOME_clinical_correlations_filtered.csv",
+  BIOCARTA = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_BIOCARTA_clinical_correlations_filtered.csv"
 )
 
 # Genomic x radiomic correlation files  
 genomic_files <- list(
-  KEGG = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_KEGG_correlative_analysis.csv",
-  HALLMARK = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_HALLMARK_correlative_analysis.csv",
-  REACTOME = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_REACTOME_correlative_analysis.csv", 
-  BIOCARTA = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_BIOCARTA_correlative_analysis.csv"
+  KEGG = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_KEGG_correlative_analysis.csv",
+  HALLMARK = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_HALLMARK_correlative_analysis.csv",
+  REACTOME = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_REACTOME_correlative_analysis.csv", 
+  BIOCARTA = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/PDA/PDA_BIOCARTA_correlative_analysis.csv"
 )
 
 # Output directory
-output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/Heatmaps/CCRCC/"
+output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/Heatmaps/PDA/"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # =========================
