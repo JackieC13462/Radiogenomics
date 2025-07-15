@@ -107,7 +107,7 @@ install.packages(c("data.table", "dplyr", "ggplot2", "pheatmap", "plotly", "heat
 
 ### Python Dependencies
 ```bash
-pip install snakemake pandas numpy scipy
+pip install snakemake
 ```
 
 ## Usage
