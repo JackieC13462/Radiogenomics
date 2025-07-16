@@ -71,11 +71,11 @@ radiomics_patient_col <- colnames(radiomics)[1]
 radiomics_uid_col <- grep("seg_series_UID", colnames(radiomics), ignore.case = TRUE, value = TRUE)[1]
 if (is.na(radiomics_uid_col)) {
   cat("seg_series_UID column not found, searching for SeriesInstanceUID_mask...\n")
-  radiomics_uid_col <- grep("SeriesInstanceUID_mask", colnames(radiomics), ignore.case = TRUE, value = TRUE)[1]
+  radiomics_uid_col <- grep("SeriesInstanceUID_Mask", colnames(radiomics), ignore.case = TRUE, value = TRUE)[1]
   if (is.na(radiomics_uid_col)) {
     stop("Neither seg_series_UID nor SeriesInstanceUID_mask column found in radiomics file.")
   } else {
-    cat("Using SeriesInstanceUID_mask as segmentation UID column.\n")
+    cat("Using SeriesInstanceUID_Mask as segmentation UID column.\n")
   }
 } else {
   cat("Using seg_series_UID as segmentation UID column.\n")
@@ -84,13 +84,43 @@ if (is.na(radiomics_uid_col)) {
 # ---- STORE GENOMICS SAMPLE IDS (COLUMN NAMES, EXCLUDING FIRST COLUMN) ----
 genomics_sample_ids <- colnames(genomics_clean)[-1]
 
-# ---- FILTER RADIOMICS TO ONLY SAMPLES PRESENT IN GENOMICS ----
+# ---- FILTER RADIOMICS AND STANDARDIZE SAMPLE IDs ----
 # Use partial matching: check if genomics sample ID is contained in radiomics sample ID
+# AND replace radiomics sample ID with the exact genomics sample ID
 radiomics_sample_ids <- radiomics[[radiomics_patient_col]]
-keep_rows <- sapply(radiomics_sample_ids, function(radio_id) {
-  any(sapply(genomics_sample_ids, function(gen_id) grepl(gen_id, radio_id, fixed = TRUE)))
-})
+keep_rows <- rep(FALSE, length(radiomics_sample_ids))
+standardized_radiomics_ids <- character(length(radiomics_sample_ids))
+
+for (i in seq_along(radiomics_sample_ids)) {
+  radio_id <- radiomics_sample_ids[i]
+  
+  # Find genomics sample IDs that are contained within this radiomics sample ID
+  matching_gen_ids <- genomics_sample_ids[sapply(genomics_sample_ids, function(gen_id) grepl(gen_id, radio_id, fixed = TRUE))]
+  
+  if (length(matching_gen_ids) == 1) {
+    # Found exactly one matching genomics ID - use it to replace the radiomics ID
+    keep_rows[i] <- TRUE
+    standardized_radiomics_ids[i] <- matching_gen_ids[1]
+    cat("Matched radiomics ID:", radio_id, "-> standardized to genomics ID:", matching_gen_ids[1], "\n")
+  } else if (length(matching_gen_ids) > 1) {
+    # Multiple genomics IDs match - use the longest match (most specific)
+    longest_match <- matching_gen_ids[which.max(nchar(matching_gen_ids))]
+    keep_rows[i] <- TRUE
+    standardized_radiomics_ids[i] <- longest_match
+    cat("Multiple matches for radiomics ID:", radio_id, "- using longest genomics match:", longest_match, "\n")
+  } else {
+    # No match found - this sample will be excluded
+    keep_rows[i] <- FALSE
+    cat("Warning: No genomics sample ID found matching radiomics ID:", radio_id, "- excluding\n")
+  }
+}
+
+# Filter radiomics to only matched samples
 radiomics <- radiomics[keep_rows, , drop = FALSE]
+standardized_radiomics_ids <- standardized_radiomics_ids[keep_rows]
+
+# Replace radiomics sample IDs with standardized genomics sample IDs
+radiomics[[radiomics_patient_col]] <- standardized_radiomics_ids
 
 cat("Number of radiomics samples after filtering:", nrow(radiomics), "\n")
 cat("Number of genomics samples available:", length(genomics_sample_ids), "\n")
@@ -105,30 +135,18 @@ new_genomics_mat <- genomics_clean[, 1, drop = FALSE]  # keep the first column (
 matched_samples <- 0
 
 for (i in seq_len(nrow(radiomics))) {
-  radio_id <- radiomics[[radiomics_patient_col]][i]
+  # Use the standardized radiomics sample ID (now matching genomics format)
+  standardized_radio_id <- radiomics[[radiomics_patient_col]][i]
   
-  # Find which genomics sample ID is contained in this radiomics ID
-  matching_gen_ids <- genomics_sample_ids[sapply(genomics_sample_ids, function(gen_id) grepl(gen_id, radio_id, fixed = TRUE))]
+  # Find the corresponding genomics column (should be exact match now)
+  col_idx <- which(colnames(genomics_clean) == standardized_radio_id)
   
-  if (length(matching_gen_ids) == 1) {
-    # Found exactly one matching genomics ID
-    gen_id <- matching_gen_ids[1]
-    col_idx <- which(colnames(genomics_clean) == gen_id)
-    if (length(col_idx) == 1) {
-      new_genomics_mat <- cbind(new_genomics_mat, genomics_clean[, col_idx, drop = FALSE])
-      matched_samples <- matched_samples + 1
-    }
-  } else if (length(matching_gen_ids) > 1) {
-    # Multiple genomics IDs match - use the longest match (most specific)
-    longest_match <- matching_gen_ids[which.max(nchar(matching_gen_ids))]
-    col_idx <- which(colnames(genomics_clean) == longest_match)
-    if (length(col_idx) == 1) {
-      new_genomics_mat <- cbind(new_genomics_mat, genomics_clean[, col_idx, drop = FALSE])
-      matched_samples <- matched_samples + 1
-      cat("Multiple matches for", radio_id, "- using longest match:", longest_match, "\n")
-    }
+  if (length(col_idx) == 1) {
+    # Found exact matching genomics column
+    new_genomics_mat <- cbind(new_genomics_mat, genomics_clean[, col_idx, drop = FALSE])
+    matched_samples <- matched_samples + 1
   } else {
-    cat("Warning: No genomics sample ID found matching radiomics ID:", radio_id, "\n")
+    cat("Warning: No exact genomics column found for standardized ID:", standardized_radio_id, "\n")
   }
 }
 
@@ -142,6 +160,7 @@ if (matched_samples == 0) {
 new_genomics_mat <- new_genomics_mat[, -1, drop = FALSE]
 
 # ---- GENERATE NEW SAMPLE IDS ----
+# Use the standardized radiomics sample IDs (now matching genomics format) + segmentation UIDs
 new_ids <- paste0(radiomics[[radiomics_patient_col]], "_", radiomics[[radiomics_uid_col]])
 
 # Only assign column names if we have columns to name
