@@ -33,9 +33,9 @@ radiomics_file:
   #LGG: "<path_to_LGG_radiomics_features>"
   #GBM: "<path_to_GBM_radiomics_features>"
   #KIRC: "<path_to_KIRC_radiomics_features>"
-  CCRCC: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-CCRCC/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+  CCRCC: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_radiomics_features_filtered.csv"
   HNSCC: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_radiomics_features_filtered.csv"
-  PDA: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-PDA/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+  PDA: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_radiomics_features_filtered.csv"
 genomics_file:
   HNSCC:
     HALLMARK: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_HALLMARK_features_filtered.csv"
