@@ -14,7 +14,7 @@ The Data_Analysis directory provides comprehensive analytical tools for:
 
 ## Directory Structure
 
-### 📁 Subdirectories
+### Subdirectories
 
 #### [`Correlations/`](./Correlations/)
 **Radiogenomic and Clinical Correlation Analysis**
@@ -62,7 +62,7 @@ Implements survival analysis using Cox regression models:
   - Performs model validation and performance assessment
 
 #### [`Enrichment/`](./Enrichment/)
-**Gene Set Enrichment Analysis (GSEA)**
+**Gene Set Variation Analysis (GSVA)**
 
 Comprehensive pathway enrichment analysis across multiple biological databases:
 
@@ -95,8 +95,8 @@ These models provide:
 ## Analysis Workflow
 
 ### 1. **Preprocessing Phase**
-- Differential expression analysis identifies cancer-specific gene signatures
-- Quality control and normalization of multi-omics data
+- Quality control and filtering of genomic, radiomic and clinical data
+- Standardize sample sets and sample IDs across all datasets
 
 ### 2. **Enrichment Phase**
 - Gene expression data transformed to pathway-level signatures
@@ -122,13 +122,7 @@ These models provide:
 
 ### **Statistical Rigor**
 - Multiple testing correction (FDR, Bonferroni)
-- Cross-validation for model robustness
-- Appropriate statistical tests for each data type
-
-### **Clinical Focus**
-- Survival analysis integration throughout pipeline
-- Clinical metadata incorporation for biomarker validation
-- Outcome-driven feature prioritization
+- Cross-validation 
 
 ### ⚡ **Scalability**
 - Designed for multiple cancer types and large datasets
@@ -145,7 +139,7 @@ These models provide:
 - **Visualization**: `ggplot2`, `pheatmap`, `corrplot`
 
 ### Data Requirements
-- **Genomic Data**: RNA-seq count matrices, normalized expression data
+- **Genomic Data**: RNA-seq normalized count matrices, TPM
 - **Radiomic Data**: Quantitative imaging features from medical images
 - **Clinical Data**: Survival outcomes, demographic and clinical variables
 - **Pathway Data**: GMT files for gene set definitions
