@@ -160,29 +160,28 @@ Clinical Data → Clinical_filter_uniqueID.R → Matched Clinical Data
 ### 3. **Feature/Signature Preparation**
 ```
 Gene Expression → geneID_converter.R → Symbol-Based Expression
-Protein Coding → protein_encoding_filtering.R → Filtered Genes
+Protein Coding → protein_encoding_filtering.R → Filtered Genes to only protein coding genes (<50% missing and >80% of genes in the signature)
 Features → feature_filtering.R → Correlation-Filtered Features
 ```
 
 ### 4. **Quality Control**
 ```
-All Data → Duplicate Detection → Quality Reports
-Clinical Data → clinical_duplicate_summary.R → QC Summaries
+All Data → Duplicate Detection → Replace duplicate sample IDs with unique identifiers
 ```
 
 ## Input Data Requirements
 
-### 📁 **Genomic Data**
+### **Genomic Data**
 - **Format**: TSV/CSV files with genes as rows, samples as columns
 - **Identifiers**: Entrez IDs or Gene Symbols
 - **Structure**: Count matrices or normalized expression data
 
-### 🖼️ **Radiomic Data**
+### **Radiomic Data**
 - **Format**: CSV files with samples as rows, features as columns
 - **Identifiers**: Series instance UIDs or other imaging identifiers
 - **Content**: Quantitative imaging features (shape, texture, intensity)
 
-### 🏥 **Clinical Data**
+### **Clinical Data**
 - **Format**: CSV/TSV files with comprehensive clinical variables
 - **Required Fields**: Sample IDs, survival data, treatment information
 - **Structure**: Patient-level clinical and demographic data
