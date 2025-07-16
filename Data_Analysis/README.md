@@ -14,16 +14,6 @@ The Data_Analysis directory provides comprehensive analytical tools for:
 
 ## Directory Structure
 
-### 📁 Core Analysis Scripts
-
-#### `DEGanalysis.R`
-**Differential Gene Expression Analysis**
-- Performs DESeq2-based differential expression analysis between tumor and normal samples
-- Processes RNA-seq count data for multiple cancer types
-- Generates normalized count matrices and statistical summaries
-- Applies variance stabilizing transformation and multiple testing correction
-- **Output**: DESeq2 results tables with log2 fold changes, p-values, and adjusted p-values
-
 ### 📁 Subdirectories
 
 #### [`Correlations/`](./Correlations/)
@@ -126,16 +116,16 @@ These models provide:
 
 ## Key Features
 
-### 🔬 **Multi-Modal Integration**
+### **Multi-Modal Integration**
 - Seamless integration of genomic, radiomic, and clinical data
 - Standardized sample matching and harmonization procedures
 
-### 📊 **Statistical Rigor**
+### **Statistical Rigor**
 - Multiple testing correction (FDR, Bonferroni)
 - Cross-validation for model robustness
 - Appropriate statistical tests for each data type
 
-### 🎯 **Clinical Focus**
+### **Clinical Focus**
 - Survival analysis integration throughout pipeline
 - Clinical metadata incorporation for biomarker validation
 - Outcome-driven feature prioritization
@@ -183,15 +173,6 @@ The Data_Analysis directory integrates with:
 - **[`Preprocessing/`](../Preprocessing/)**: Data harmonization and filtering
 - **[`Snakemake/`](../Snakemake/)**: Automated workflow execution
 - **[`Visualization_scripts/`](../Visualization_scripts/)**: Results visualization
-
-## Contributing
-
-When adding new analysis scripts:
-1. Follow established naming conventions
-2. Include comprehensive header documentation
-3. Implement appropriate statistical methods
-4. Add validation and quality control checks
-5. Update this README with new functionality
 
 ---
 

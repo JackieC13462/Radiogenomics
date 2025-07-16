@@ -144,7 +144,7 @@ The Preprocessing directory provides comprehensive data preparation tools for:
 
 ## Data Flow Architecture
 
-### 1. **Raw Data Ingestion**
+### 1. **Raw Data Processing**
 ```
 Raw Genomic Data → combining_counts.R → Unified Count Matrices
 Raw Clinical Data → clinical_data_extraction.R → Filtered Clinical Data
@@ -157,7 +157,7 @@ Multi-Modal Data → unique_ID_generator.R → Harmonized Sample IDs
 Clinical Data → Clinical_filter_uniqueID.R → Matched Clinical Data
 ```
 
-### 3. **Feature Processing**
+### 3. **Feature/Signature Preparation**
 ```
 Gene Expression → geneID_converter.R → Symbol-Based Expression
 Protein Coding → protein_encoding_filtering.R → Filtered Genes
@@ -189,29 +189,29 @@ Clinical Data → clinical_duplicate_summary.R → QC Summaries
 
 ## Output Standards
 
-### 📤 **Harmonized Datasets**
+### **Harmonized Datasets**
 - Consistent sample identifier formatting across all data types
 - Matched samples only (intersection of available data)
 - Standardized file naming conventions
 
-### 📊 **Quality Control Reports**
+### **Quality Control Reports**
 - Sample matching statistics and success rates
 - Feature filtering summaries and retained features
 - Data completeness and quality metrics
 
-### 🔍 **Processing Logs**
+### **Processing Logs**
 - Comprehensive logging of all preprocessing steps
 - Error handling and resolution documentation
 - Traceability of data transformations
 
 ## Integration Points
 
-### 🔄 **Upstream Integration**
+### **Upstream Integration**
 - **Data Sources**: TCGA, CPTAC, institutional databases
 - **File Formats**: Standard genomic and clinical data formats
 - **Quality Requirements**: Minimum sample sizes and data completeness
 
-### ⬇️ **Downstream Integration**
+### **Downstream Integration**
 - **[`Data_Analysis/`](../Data_Analysis/)**: Provides clean, harmonized data for analysis
 - **[`Snakemake/`](../Snakemake/)**: Automated workflow execution
 - **[`Visualization_scripts/`](../Visualization_scripts/)**: Processed data for visualization
@@ -231,18 +231,18 @@ Clinical Data → clinical_duplicate_summary.R → QC Summaries
 
 ## Usage Guidelines
 
-### 🚀 **Getting Started**
+### **Getting Started**
 1. Ensure all dependencies are installed
 2. Configure file paths in script headers
 3. Run scripts in logical sequence (harmonization → filtering → feature processing)
 4. Monitor logs for quality control feedback
 
-### ⚙️ **Configuration**
+### **Configuration**
 - Modify file paths in script headers as needed
 - Adjust filtering thresholds based on dataset characteristics
 - Configure cancer type prefixes for multi-cohort analysis
 
-### 🔧 **Troubleshooting**
+### **Troubleshooting**
 - Check sample identifier formats for matching issues
 - Verify internet connectivity for BioMart queries
 - Monitor memory usage for large dataset processing
@@ -250,37 +250,21 @@ Clinical Data → clinical_duplicate_summary.R → QC Summaries
 
 ## Best Practices
 
-### 📋 **Data Management**
+### **Data Management**
 - Maintain original data backups before preprocessing
 - Document all preprocessing parameters and decisions
 - Use version control for preprocessing script modifications
 
-### 🔍 **Quality Control**
+### **Quality Control**
 - Regularly review processing logs and summaries
 - Validate sample matching across modalities
 - Monitor feature retention after filtering steps
 
-### 📈 **Performance Optimization**
+### **Performance Optimization**
 - Use data.table for large dataset processing
 - Implement parallel processing where appropriate
 - Monitor memory usage and optimize accordingly
 
-## Contributing
-
-When adding new preprocessing scripts:
-1. Follow established naming conventions (`descriptive_name.R`)
-2. Include comprehensive header documentation
-3. Implement robust error handling and logging
-4. Add input validation and quality checks
-5. Update this README with new functionality
-
-## Future Enhancements
-
-- **Machine Learning Integration**: Automated quality assessment using ML
-- **Multi-Species Support**: Extension beyond human genomics
-- **Cloud Processing**: Scalable cloud-based preprocessing pipelines
-- **Real-Time QC**: Interactive quality control dashboards
-
 ---
 
-**Note**: The Preprocessing directory is foundational to the entire radiogenomics pipeline. Proper execution of these scripts ensures high-quality, harmonized data for all downstream analyses.
+**Note**: The Preprocessing directory is a collection of foundational scripts that are essential to the entire radiogenomics pipeline. These scripts are not an automated process, and can be selectively executed, however, refer to each pipeline's input requirements to ensure proper filtering of the raw data is done before running any of the pipelines.
