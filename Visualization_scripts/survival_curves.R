@@ -85,17 +85,18 @@ for (g in names(genomic_files)) {
 
 # ---- 2. FILTER COX MODEL RESULTS BY FDR ----
 filtered_features <- list()
+cox_results <- list()  # Store full cox results for C-index extraction
 for (g in names(cox_files)) {
   cox <- fread(cox_files[[g]])
   cox <- cox[!is.na(FDR) & FDR <= 0.05]
   filtered_features[[g]] <- cox$Signature
+  cox_results[[g]] <- cox  # Store for later C-index extraction
 }
 
 # --- 2.5 FILTER GENOMIC FEATURES BY FDR-PASSING SIGNATURES ---
 for (g in names(cox_files)) {
   # Get the cox file for this group and select top 10 signatures by FDR
-  cox <- fread(cox_files[[g]])
-  cox <- cox[!is.na(FDR) & FDR <= 0.05]
+  cox <- cox_results[[g]]  # Use stored cox results
   cox <- cox[order(FDR, decreasing = FALSE)]
   top_signatures <- head(cox$Signature, 10)
   genomic_mat <- get(paste0(g, "_genomic"))
@@ -122,14 +123,38 @@ for (g in names(correlation_files)) {
 for (g in names(final_features)) {
   if (nrow(final_features[[g]]) == 0) next
   genomic_mat <- get(paste0(g, "_genomic"))
+  cox_data <- cox_results[[g]]  # Get cox results for this pathway
+  
   for (i in seq_len(nrow(final_features[[g]]))) {
     feature <- final_features[[g]]$GenomicFeature[i]
     radiomic <- final_features[[g]]$RadiomicFeature[i]
+    
+    # Extract C-index from Cox results (already calculated for binary high/low groups)
+    cox_c_index <- cox_data[Signature == feature, C_index]
+    if (length(cox_c_index) == 0 || is.na(cox_c_index)) {
+      cox_c_index <- "N/A"
+    } else {
+      cox_c_index <- round(as.numeric(cox_c_index), 3)
+    }
+    
     # Merge clinical and feature
     merged <- merge(clinical, genomic_mat[, .(SampleID, value = get(feature))], by = "SampleID")
-    # Split by median
+    
+    # Remove rows with missing values
+    merged <- merged[!is.na(value) & !is.na(OS_days_CCRCC) & !is.na(OS_event_CCRCC)]
+    
+    if (nrow(merged) < 10) {
+      cat("Warning: Too few samples with complete data for", feature, ". Skipping.\n")
+      next
+    }
+    
+    # Split by median (same as original Cox model)
     median_val <- median(merged$value, na.rm = TRUE)
     merged$group <- ifelse(merged$value > median_val, "High", "Low")
+    
+    # Create annotation text with C-index from Cox model
+    c_index_text <- paste0("C-index = ", cox_c_index)
+    
     # Survival curve
     surv_obj <- Surv(time = merged$OS_days_CCRCC, event = merged$OS_event_CCRCC)
     plot_title <- paste0("Survival Curve: High vs Low ", feature, " (", g, ")\nCorrelated with radiomic: ", radiomic)
@@ -145,7 +170,25 @@ for (g in names(final_features)) {
               legend.background = element_rect(fill = "white", color = NA),
               legend.key = element_rect(fill = "white", color = NA))
     )
-    ggsave(file.path(output_dir, paste0("survival_curve_", g, "_", feature, "_corr_", radiomic, ".png")), p$plot, width = 14, height = 7, dpi = 300)
+    
+    # Add C-index annotation to the plot
+    p$plot <- p$plot + 
+      annotate("text", 
+               x = Inf, 
+               y = Inf, 
+               label = c_index_text, 
+               hjust = 1.05, 
+               vjust = 2.5, 
+               size = 5, 
+               color = "black",
+               fontface = "bold")
+    
+    # Clean feature and radiomic names for filename
+    clean_feature <- gsub("[^A-Za-z0-9_]", "_", feature)
+    clean_radiomic <- gsub("[^A-Za-z0-9_]", "_", radiomic)
+    
+    ggsave(file.path(output_dir, paste0("survival_curve_", g, "_", clean_feature, "_corr_", clean_radiomic, ".png")), 
+           p$plot, width = 14, height = 7, dpi = 300)
   }
 }
 cat("Survival curves generated for all selected feature pairs.\n")
