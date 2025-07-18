@@ -46,25 +46,25 @@ library(ggplot2)
 # ---- USER INPUTS ----
 # File lists (update paths as needed)
 cox_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_KEGG_cox_results_binary.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_HALLMARK_cox_results_binary.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_BIOCARTA_cox_results_binary.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_REACTOME_cox_results_binary.csv"
+  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_KEGG_cox_results_binary.csv",
+  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_HALLMARK_cox_results_binary.csv",
+  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_BIOCARTA_cox_results_binary.csv",
+  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_REACTOME_cox_results_binary.csv"
 )
 correlation_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_KEGG_correlative_analysis.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_HALLMARK_correlative_analysis.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_BIOCARTA_correlative_analysis.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_REACTOME_correlative_analysis.csv"
+  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_KEGG_correlative_analysis.csv",
+  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_HALLMARK_correlative_analysis.csv",
+  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_BIOCARTA_correlative_analysis.csv",
+  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_REACTOME_correlative_analysis.csv"
 )
-clinical_file <- "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_harmonized_clinical.csv"
+clinical_file <- "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_clinical.csv"
 genomic_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_harmonized_kegg_genomics.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_harmonized_hallmark_genomics.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_harmonized_biocarta_genomics.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_harmonized_reactome_genomics.csv"
+  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_kegg_genomics.csv",
+  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_hallmark_genomics.csv",
+  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_biocarta_genomics.csv",
+  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_reactome_genomics.csv"
 )
-output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/Visualizations/survival_outcomes/survival_curves/HNSCC"
+output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/survival_curves/CCRCC"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # ---- 1. STANDARDIZE SAMPLE ID COLUMN NAMES ----
@@ -75,7 +75,7 @@ standardize_sampleid <- function(file, old_col) {
   }
   return(dt)
 }
-clinical <- standardize_sampleid(clinical_file, "cases.submitter_id_HNSCC")
+clinical <- standardize_sampleid(clinical_file, "cases.submitter_id_CCRCC")
 
 for (g in names(genomic_files)) {
   dt <- fread(genomic_files[[g]])
@@ -108,8 +108,8 @@ for (g in names(correlation_files)) {
   # Robust matching: ensure both columns are character, trimmed, and case-matched
   corr$GenomicFeature <- trimws(as.character(corr$GenomicFeature))
   filtered_set <- trimws(as.character(filtered_features[[g]]))
-  # Only keep pairs with |SpearmanRho| > 0.1 and FDR-passing genomic features
-  keep <- corr[abs(SpearmanRho) > 0.1 & GenomicFeature %in% filtered_set]
+  # Only keep pairs with |SpearmanRho| > 0.4 and FDR-passing genomic features
+  keep <- corr[abs(SpearmanRho) > 0.4 & GenomicFeature %in% filtered_set]
   # For each GenomicFeature, keep only the row with the highest absolute SpearmanRho
   keep[, absRho := abs(SpearmanRho)]
   setorder(keep, GenomicFeature, -absRho)
@@ -131,7 +131,7 @@ for (g in names(final_features)) {
     median_val <- median(merged$value, na.rm = TRUE)
     merged$group <- ifelse(merged$value > median_val, "High", "Low")
     # Survival curve
-    surv_obj <- Surv(time = merged$OS_days_HNSCC, event = merged$OS_event_HNSCC)
+    surv_obj <- Surv(time = merged$OS_days_CCRCC, event = merged$OS_event_CCRCC)
     plot_title <- paste0("Survival Curve: High vs Low ", feature, " (", g, ")\nCorrelated with radiomic: ", radiomic)
     p <- ggsurvplot(
       survfit(surv_obj ~ group, data = merged),
