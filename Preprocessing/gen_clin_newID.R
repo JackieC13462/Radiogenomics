@@ -129,15 +129,20 @@ cat("Reactome:", nrow(reactome), "samples\n")
 cat("BioCarta:", nrow(biocarta), "samples\n")
 
 # ---- WRITE OUTPUT ----
+# Extract cancer type from clinical file name for output file naming
+clinical_basename <- basename(clinical_file)
+cancer_type <- strsplit(clinical_basename, "_")[[1]][1]
+
 # Write clinical dataset
-fwrite(clinical, file.path(output_dir, "harmonized_clinical.csv"), sep = ",", quote = TRUE, na = "NA")
+fwrite(clinical, file.path(output_dir, paste0(cancer_type, "_harmonized_clinical.csv")), sep = ",", quote = TRUE, na = "NA")
 
 # Write genomic datasets
-fwrite(hallmark, file.path(output_dir, "harmonized_hallmark_genomics.csv"), sep = ",", quote = TRUE, na = "NA")
-fwrite(kegg, file.path(output_dir, "harmonized_kegg_genomics.csv"), sep = ",", quote = TRUE, na = "NA")
-fwrite(reactome, file.path(output_dir, "harmonized_reactome_genomics.csv"), sep = ",", quote = TRUE, na = "NA")
-fwrite(biocarta, file.path(output_dir, "harmonized_biocarta_genomics.csv"), sep = ",", quote = TRUE, na = "NA")
+fwrite(hallmark, file.path(output_dir, paste0(cancer_type, "_harmonized_hallmark_genomics.csv")), sep = ",", quote = TRUE, na = "NA")
+fwrite(kegg, file.path(output_dir, paste0(cancer_type, "_harmonized_kegg_genomics.csv")), sep = ",", quote = TRUE, na = "NA")
+fwrite(reactome, file.path(output_dir, paste0(cancer_type, "_harmonized_reactome_genomics.csv")), sep = ",", quote = TRUE, na = "NA")
+fwrite(biocarta, file.path(output_dir, paste0(cancer_type, "_harmonized_biocarta_genomics.csv")), sep = ",", quote = TRUE, na = "NA")
 
 cat("\nHarmonization completed successfully!\n")
 cat("All datasets now have matching sample IDs for downstream analysis.\n")
 cat("Harmonized files written to:", output_dir, "\n")
+cat("Files created with prefix:", cancer_type, "\n")
