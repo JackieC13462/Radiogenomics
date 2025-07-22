@@ -168,7 +168,9 @@ for (g in names(final_features)) {
         theme(panel.background = element_rect(fill = "white", color = NA),
               plot.background = element_rect(fill = "white", color = NA),
               legend.background = element_rect(fill = "white", color = NA),
-              legend.key = element_rect(fill = "white", color = NA))
+              legend.key = element_rect(fill = "white", color = NA),
+              plot.title = element_text(size = 9),  # Much smaller title font
+              plot.subtitle = element_text(size = 9)) # Smaller subtitle font if present
     )
     
     # Add C-index annotation to the plot
