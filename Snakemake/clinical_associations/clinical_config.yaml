@@ -14,9 +14,9 @@ clinical_data:
   #LGG: "<path_to_LGG_clinical_data>"
   #GBM: "<path_to_GBM_clinical_data>"
   #KIRC: "<path_to_KIRC_clinical_data>"
-  CCRCC: "<path_to_CCRCC_clinical_data>"
+  CCRCC: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/CCRCC_combined_clinical_data.csv"
   HNSCC: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/HNSCC_combined_clinical_data.csv"
-  PDA: "<path_to_PDA_clinical_data>"
+  PDA: "/cluster/projects/bhklab/rawdata/Radiogenomics/Clinical_data/combined_clinical/PDA_combined_clinical_data.csv"
 
 sample_ids:
   #NSCLC: "/cluster/projects/bhklab/rawdata/Radiogenomics/sample_ids/NSCLC_patientids.txt"
@@ -33,9 +33,9 @@ radiomics_file:
   #LGG: "<path_to_LGG_radiomics_features>"
   #GBM: "<path_to_GBM_radiomics_features>"
   #KIRC: "<path_to_KIRC_radiomics_features>"
-  CCRCC: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-CCRCC/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+  CCRCC: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_radiomics_features_filtered.csv"
   HNSCC: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_radiomics_features_filtered.csv"
-  PDA: "/cluster/projects/radiomics/PublicDatasets/procdata/Abdomen/TCIA_CPTAC-PDA/features/pyradiomics/pyradiomics_h4h_all_images_features/original_full_features.csv"
+  PDA: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_radiomics_features_filtered.csv"
 genomics_file:
   HNSCC:
     HALLMARK: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/HNSCC/HNSCC_HALLMARK_features_filtered.csv"
@@ -48,15 +48,15 @@ genomics_file:
     #Reactome: "<path_to_NSCLC_reactome_genomics_data>"
     #Biocarta: "<path_to_NSCLC_biocarta_genomics_data>"
   PDA:
-    Hallmark: "<path_to_PDA_hallmark_genomics_data>"
-    Kegg: "<path_to_PDA_kegg_genomics_data>"
-    Reactome: "<path_to_PDA_reactome_genomics_data>"
-    Biocarta: "<path_to_PDA_biocarta_genomics_data>"
+    HALLMARK: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_HALLMARK_features_filtered.csv"
+    KEGG: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_KEGG_features_filtered.csv"
+    REACTOME: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_REACTOME_features_filtered.csv"
+    BIOCARTA: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/PDA/PDA_BIOCARTA_features_filtered.csv"
   CCRCC:
-    Hallmark: "<path_to_CCRCC_hallmark_genomics_data>"
-    Kegg: "<path_to_CCRCC_kegg_genomics_data>"
-    Reactome: "<path_to_CCRCC_reactome_genomics_data>"
-    Biocarta: "<path_to_CCRCC_biocarta_genomics_data>"
+    HALLMARK: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_HALLMARK_features_filtered.csv"
+    KEGG: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_KEGG_features_filtered.csv"
+    REACTOME: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_REACTOME_features_filtered.csv"
+    BIOCARTA: "/cluster/projects/bhklab/procdata/Radiogenomics/outputs/correlations/CCRCC/CCRCC_BIOCARTA_features_filtered.csv"
   #GBM:
     #Hallmark: "<path_to_GBM_hallmark_genomics_data>"
     #Kegg: "<path_to_GBM_kegg_genomics_data>"

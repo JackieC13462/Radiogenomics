@@ -53,18 +53,13 @@ suppressPackageStartupMessages({
 
 # ---- USER INPUTS ----
 input_files <- list(
-  KEGG_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_KEGG_cox_results_binary.csv",
-  HALLMARK_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_HALLMARK_cox_results_binary.csv",
-  BIOCARTA_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_BIOCARTA_cox_results_binary.csv",
-  REACTOME_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_REACTOME_cox_results_binary.csv",
-  KEGG_cont = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_KEGG_cox_results_continuous.csv",
-  HALLMARK_cont = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_HALLMARK_cox_results_continuous.csv",
-  BIOCARTA_cont = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_BIOCARTA_cox_results_continuous.csv",
-  REACTOME_cont = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_REACTOME_cox_results_continuous.csv",
-  radiomics_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_radiomics_cox_results_binary.csv",
-  radiomics_cont = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/Cox_results/HNSCC_radiomics_cox_results_continuous.csv"
+  KEGG_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/HNSCC/HNSCC_KEGG_cox_results_binary.csv",
+  HALLMARK_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/HNSCC/HNSCC_HALLMARK_cox_results_binary.csv",
+  BIOCARTA_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/HNSCC/HNSCC_BIOCARTA_cox_results_binary.csv",
+  REACTOME_bin = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/HNSCC/HNSCC_REACTOME_cox_results_binary.csv",
+  radiomics = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/HNSCC/HNSCC_radiomics_cox_results_binary.csv"
 )
-output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/Visualizations/forest_plots"
+output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/forest_plots/HNSCC"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 top_n <- 20  # Number of top FDR-significant signatures to plot

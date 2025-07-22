@@ -19,13 +19,13 @@ clinical_data_files <- list(
   GBM = "/Users/jackie-mac/Desktop/VSCode/data/clinical/Filtered_clinical/GBM_clinical_data_filtered.csv"
 )
 survival_data_files <- list(
-  CCRCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival_data/CCRCC_survival.tsv",
-  HNSCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival_data/HNSCC_survival.tsv",
-  PDA   = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival_data/PDA_survival.tsv",
-  BRCA  = "/Users/jackie-mac/Desktop/VSCode/data/clinical/Linkedomics_clinical/Human__TCGA_BRCA__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
-  LGG = "/Users/jackie-mac/Desktop/VSCode/data/clinical/Linkedomics_clinical/Human__TCGA_LGG__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
-  KIRC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/Linkedomics_clinical/Human__TCGA_KIRC__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
-  GBM = "/Users/jackie-mac/Desktop/VSCode/data/clinical/Linkedomics_clinical/Human__TCGA_GBM__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv"
+  CCRCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/CCRCC_survival.tsv",
+  HNSCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/HNSCC_survival.tsv",
+  PDA   = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/PDA_survival.tsv",
+  BRCA  = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/Human__TCGA_BRCA__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
+  LGG = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/Human__TCGA_LGG__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
+  KIRC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/Human__TCGA_KIRC__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv",
+  GBM = "/Users/jackie-mac/Desktop/VSCode/data/clinical/survival/Human__TCGA_GBM__MS__Clinical__Clinical__01_28_2016__BI__Clinical__Firehose.tsv"
 )
 sample_id_files <- list(
   CCRCC = "/Users/jackie-mac/Desktop/VSCode/data/sample_ids/CCRCC_patientids.txt",
@@ -37,13 +37,13 @@ sample_id_files <- list(
   GBM = "/Users/jackie-mac/Desktop/VSCode/data/sample_ids/GBM_patientids.txt"
 )
 output_files <- list(
-  CCRCC = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/CCRCC_combined_clinical_data.csv",
-  HNSCC = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/HNSCC_combined_clinical_data.csv",
-  PDA   = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/PDA_combined_clinical_data.csv",
-  BRCA  = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/BRCA_combined_clinical_data.csv",
-  KIRC = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/KIRC_combined_clinical_data.csv",
-  LGG = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/LGG_combined_clinical_data.csv",
-  GBM = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical/test_clinical/GBM_combined_clinical_data.csv"
+  CCRCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/CCRCC_combined_clinical_data.csv",
+  HNSCC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/HNSCC_combined_clinical_data.csv",
+  PDA   = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/PDA_combined_clinical_data.csv",
+  BRCA  = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/BRCA_combined_clinical_data.csv",
+  KIRC = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/KIRC_combined_clinical_data.csv",
+  LGG = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/LGG_combined_clinical_data.csv",
+  GBM = "/Users/jackie-mac/Desktop/VSCode/data/clinical/combined_clinical/GBM_combined_clinical_data.csv"
 )
 
 columns_to_extract_clinical <- c(

@@ -8,10 +8,11 @@
 #
 # Description:
 #   This script generates multiple visualization types to explore and present
-#   Cox proportional hazards model results. It creates publication-ready plots
-#   showing feature importance, statistical significance patterns, and clinical
-#   relevance of radiogenomic signatures in survival analysis.
-#
+#   Cox proportional hazards model results. 
+#   It includes:
+#   - Histograms of hazard ratios for binary and continuous models
+#   - Top significant features ranked by effect size and FDR
+#   - Treatment outcome distribution plots
 # Input Requirements:
 #   1. Cox regression results: CSV files with hazard ratios, p-values, confidence intervals
 #   2. Radiogenomic correlation data: Optional correlation matrices
