@@ -10,15 +10,19 @@ PANCAN_OUTDIR = "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/PANCAN
 # Add rule all to expand all expected outputs for all cancer types and pathway groups, including both binary and continuous Cox model outputs and harmonized clinical data
 rule all:
     input:
-        # Harmonized clinical data
+        # Individual cancer type harmonized files (in cancer-specific subdirectories)
         [config["output_dir"][cancer] + f"{cancer}_harmonized_clinical.csv" for cancer in cancer_types] +
-        # Combined datasets
+        [config["output_dir"][cancer] + f"{cancer}_harmonized_hallmark_genomics.csv" for cancer in cancer_types] +
+        [config["output_dir"][cancer] + f"{cancer}_harmonized_kegg_genomics.csv" for cancer in cancer_types] +
+        [config["output_dir"][cancer] + f"{cancer}_harmonized_reactome_genomics.csv" for cancer in cancer_types] +
+        [config["output_dir"][cancer] + f"{cancer}_harmonized_biocarta_genomics.csv" for cancer in cancer_types] +
+        # Combined pan-cancer datasets (in main PANCAN directory)
         [PANCAN_OUTDIR + "COMBINED_harmonized_clinical.csv",
          PANCAN_OUTDIR + "COMBINED_harmonized_kegg_genomics.csv",
          PANCAN_OUTDIR + "COMBINED_harmonized_hallmark_genomics.csv",
          PANCAN_OUTDIR + "COMBINED_harmonized_reactome_genomics.csv",
          PANCAN_OUTDIR + "COMBINED_harmonized_biocarta_genomics.csv"] +
-        # Pan-cancer Cox model outputs
+        # Pan-cancer Cox model outputs (in main PANCAN directory)
         [PANCAN_OUTDIR + "COMBINED_KEGG_pancancer_cox_results_binary.csv",
          PANCAN_OUTDIR + "COMBINED_HALLMARK_pancancer_cox_results_binary.csv",
          PANCAN_OUTDIR + "COMBINED_REACTOME_pancancer_cox_results_binary.csv",
