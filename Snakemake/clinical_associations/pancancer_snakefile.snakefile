@@ -4,8 +4,8 @@ configfile: "pancancer_config.yaml"
 # Harmonize pathway group names to uppercase for consistency
 cancer_types = config["cancer_types"]
 pathway_groups = ["HALLMARK", "KEGG", "REACTOME", "BIOCARTA"]
-# Use the first cancer type's output directory since all point to the same PANCAN directory
-PANCAN_OUTDIR = config["output_dir"][cancer_types[0]]
+# Extract the parent PANCAN directory for combined outputs
+PANCAN_OUTDIR = "/cluster/projects/bhklab/procdata/Radiogenomics/clinical/PANCAN/"
 
 # Add rule all to expand all expected outputs for all cancer types and pathway groups, including both binary and continuous Cox model outputs and harmonized clinical data
 rule all:
@@ -62,6 +62,9 @@ rule clinical_filter_unique_id:
         time="00:30:00"
     shell:
         """
+        # Create output directory
+        mkdir -p {params.output_dir}
+        
         module load R
         Rscript /cluster/home/t138199uhn/Scripts/gen_clin_newID.R \
             {input.clinical_file} \
@@ -82,7 +85,7 @@ rule combine_datasets:
         combined_reactome=PANCAN_OUTDIR + "COMBINED_harmonized_reactome_genomics.csv",
         combined_biocarta=PANCAN_OUTDIR + "COMBINED_harmonized_biocarta_genomics.csv"
     params:
-        input_dir="/cluster/projects/bhklab/procdata/Radiogenomics/clinical",
+        input_dir="/cluster/projects/bhklab/procdata/Radiogenomics/clinical/PANCAN",
         output_dir=PANCAN_OUTDIR
     resources:
         mem_mb=4000,
