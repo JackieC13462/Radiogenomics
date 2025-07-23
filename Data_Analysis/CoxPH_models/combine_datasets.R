@@ -30,10 +30,11 @@ library(data.table)
 
 # ---- FUNCTION: FIND FILES BY PATTERN ----
 find_files_by_pattern <- function(input_dir, pattern) {
-  # Find all files matching the pattern in the input directory
-  files <- list.files(input_dir, pattern = pattern, full.names = TRUE)
+  # Find all files matching the pattern in the input directory and subdirectories
+  files <- list.files(input_dir, pattern = pattern, full.names = TRUE, recursive = TRUE)
   if (length(files) == 0) {
     cat("Warning: No files found matching pattern:", pattern, "in directory:", input_dir, "\n")
+    cat("Searching recursively in subdirectories...\n")
   }
   return(files)
 }
@@ -180,9 +181,7 @@ combine_datasets_across_cancers <- function(input_dir, output_dir) {
         genomic_data <- genomic_data[, -1, drop = FALSE]
       }
       
-      # Add cancer type suffix to sample IDs to avoid conflicts across cancer types
-      new_rownames <- paste0(rownames(genomic_data), "_", cancer_type)
-      rownames(genomic_data) <- new_rownames
+      # No need to add cancer type suffix since sample IDs should be unique across cancer types
       
       # If this is the first dataset for this pathway group, initialize combined_genomic
       if (nrow(combined_genomic) == 0) {

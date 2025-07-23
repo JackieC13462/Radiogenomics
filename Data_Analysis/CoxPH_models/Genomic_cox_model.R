@@ -53,7 +53,7 @@ clinical_data <- read.csv(clinical_data_file)
 # ---- ENSURE CLINICAL DATA CONTAINS REQUIRED COLUMNS ----
 # All columns have the prefix as a suffix, e.g., diagnoses.age_at_diagnosis_HNSCC
 col_suffix <- paste0("_", column_prefix)
-required_base_columns <- c("OS_days", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage")
+required_base_columns <- c("OS_days", "OS_event", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage")
 required_columns <- paste0(required_base_columns, col_suffix)
 
 if (!all(required_columns %in% colnames(clinical_data))) {
@@ -80,13 +80,13 @@ cat("Genomic features have been binarized based on median expression scores.\n")
 merged_data <- merge(clinical_data, binarized_features, by.x = sample_id_col, by.y = "row.names", all.x = TRUE)
 rownames(merged_data) <- merged_data[[sample_id_col]]
 
-# Ensure no missing values in OS_days
-if (any(is.na(merged_data[[required_columns[1]]]))) {
-  stop("Missing values detected in OS_days column after merging.")
+# Ensure no missing values in OS_days and OS_event
+if (any(is.na(merged_data[[required_columns[1]]])) || any(is.na(merged_data[[required_columns[2]]]))) {
+  stop("Missing values detected in OS_days or OS_event column after merging.")
 }
 
 # ---- PREPARE SURVIVAL OBJECT ----
-surv_object <- Surv(time = merged_data[[required_columns[1]]])  # Continuous survival time
+surv_object <- Surv(time = merged_data[[required_columns[1]]], event = merged_data[[required_columns[2]]])
 
 # ---- COX PROPORTIONAL HAZARDS MODEL (BINARY) ----
 results_binary <- data.frame(

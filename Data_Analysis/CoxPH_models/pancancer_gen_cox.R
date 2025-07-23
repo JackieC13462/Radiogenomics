@@ -62,7 +62,7 @@ cat("Loaded clinical data:", nrow(clinical_data), "samples\n")
 
 # ---- ENSURE CLINICAL DATA CONTAINS REQUIRED COLUMNS ----
 # Since clinical data suffixes have been removed, use standard column names
-required_columns <- c("OS_days", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage", "cancer_type")
+required_columns <- c("OS_days", "OS_event", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage", "cancer_type")
 
 if (!all(required_columns %in% colnames(clinical_data))) {
   missing_cols <- required_columns[!required_columns %in% colnames(clinical_data)]
@@ -89,16 +89,17 @@ for (feature in colnames(filtered_genomic_features)) {
 }
 cat("Genomic features have been binarized based on median expression scores.\n")
 
-# Merge using the sample ID
+# Merge using the standard sample ID
 merged_data <- merge(clinical_data, binarized_features, by.x = sample_id_col, by.y = "row.names", all.x = TRUE)
 rownames(merged_data) <- merged_data[[sample_id_col]]
 
 # Remove samples with missing survival data
-merged_data <- merged_data[!is.na(merged_data$OS_days), ]
+merged_data <- merged_data[!is.na(merged_data$OS_days) & !is.na(merged_data$OS_event), ]
 cat("Final merged dataset:", nrow(merged_data), "samples\n")
 
 # ---- PREPARE SURVIVAL OBJECT ----
-surv_object <- Surv(time = merged_data$OS_days)
+# Create survival object with both time and event status
+surv_object <- Surv(time = merged_data$OS_days, event = merged_data$OS_event)
 
 # ---- COX PROPORTIONAL HAZARDS MODEL (BINARY) ----
 cat("Running univariate Cox models (binary features)...\n")

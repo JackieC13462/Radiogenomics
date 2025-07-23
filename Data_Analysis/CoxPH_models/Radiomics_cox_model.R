@@ -99,22 +99,22 @@ for (feature in colnames(filtered_radiomics_features)) {
 cat("Radiomics features have been binarized based on median scores.\n")
 
 # ---- ENSURE CLINICAL DATA CONTAINS REQUIRED COLUMNS ----
-required_columns <- c("OS_days", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage")
+required_columns <- c("OS_days", "OS_event", "diagnoses.age_at_diagnosis", "demographic.gender", "diagnoses.ajcc_pathologic_stage")
 if (!all(required_columns %in% colnames(filtered_clinical_data))) {
-  stop("Clinical data is missing required columns: OS_days, diagnoses.age_at_diagnosis, demographic.gender, diagnoses.ajcc_pathologic_stage")
+  stop("Clinical data is missing required columns: OS_days, OS_event, diagnoses.age_at_diagnosis, demographic.gender, diagnoses.ajcc_pathologic_stage")
 }
 
 # ---- MERGE DATA ----
 merged_data <- merge(filtered_clinical_data, binarized_features, by.x = "cases.submitter_id", by.y = "row.names", all.x = TRUE)
 rownames(merged_data) <- merged_data$cases.submitter_id
 
-# Ensure no missing values in OS_days
-if (any(is.na(merged_data$OS_days))) {
-  stop("Missing values detected in OS_days column after merging.")
+# Ensure no missing values in OS_days and OS_event
+if (any(is.na(merged_data$OS_days)) || any(is.na(merged_data$OS_event))) {
+  stop("Missing values detected in OS_days or OS_event column after merging.")
 }
 
 # ---- PREPARE SURVIVAL OBJECT ----
-surv_object <- Surv(time = merged_data$OS_days)  # Continuous survival time
+surv_object <- Surv(time = merged_data$OS_days, event = merged_data$OS_event)
 
 # ---- COX PROPORTIONAL HAZARDS MODEL ----
 # Initialize results dataframe
