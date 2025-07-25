@@ -46,25 +46,21 @@ library(ggplot2)
 # ---- USER INPUTS ----
 # File lists (update paths as needed)
 cox_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_KEGG_cox_results_binary.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_HALLMARK_cox_results_binary.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_BIOCARTA_cox_results_binary.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_REACTOME_cox_results_binary.csv"
+  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/PANCAN/COMBINED_KEGG_pancancer_cox_results_binary.csv",
+  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/PANCAN/COMBINED_HALLMARK_pancancer_cox_results_binary.csv",
+  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/PANCAN/COMBINED_BIOCARTA_pancancer_cox_results_binary.csv",
+  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/PANCAN/COMBINED_REACTOME_pancancer_cox_results_binary.csv"
 )
-correlation_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_KEGG_correlative_analysis.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_HALLMARK_correlative_analysis.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_BIOCARTA_correlative_analysis.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/correlations/CCRCC/CCRCC_REACTOME_correlative_analysis.csv"
-)
-clinical_file <- "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_clinical.csv"
+# No longer using correlation files
+# correlation_files <- list(...)
+clinical_file <- "/Users/jackie-mac/Desktop/VSCode/procdata/PANCAN/COMBINED_harmonized_clinical.csv"
 genomic_files <- list(
-  kegg = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_kegg_genomics.csv",
-  hallmark = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_hallmark_genomics.csv",
-  biocarta = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_biocarta_genomics.csv",
-  reactome = "/Users/jackie-mac/Desktop/VSCode/outputs/clinical_associations/CCRCC/CCRCC_harmonized_reactome_genomics.csv"
+  kegg = "/Users/jackie-mac/Desktop/VSCode/procdata/PANCAN/COMBINED_harmonized_kegg_genomics.csv",
+  hallmark = "/Users/jackie-mac/Desktop/VSCode/procdata/PANCAN/COMBINED_harmonized_hallmark_genomics.csv",
+  biocarta = "/Users/jackie-mac/Desktop/VSCode/procdata/PANCAN/COMBINED_harmonized_biocarta_genomics.csv",
+  reactome = "/Users/jackie-mac/Desktop/VSCode/procdata/PANCAN/COMBINED_harmonized_reactome_genomics.csv"
 )
-output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/survival_curves/CCRCC"
+output_dir <- "/Users/jackie-mac/Desktop/VSCode/outputs/plots/survival_curves/PANCAN"
 if (!dir.exists(output_dir)) dir.create(output_dir, recursive = TRUE)
 
 # ---- 1. STANDARDIZE SAMPLE ID COLUMN NAMES ----
@@ -75,7 +71,7 @@ standardize_sampleid <- function(file, old_col) {
   }
   return(dt)
 }
-clinical <- standardize_sampleid(clinical_file, "cases.submitter_id_CCRCC")
+clinical <- standardize_sampleid(clinical_file, "cases.submitter_id")
 
 for (g in names(genomic_files)) {
   dt <- fread(genomic_files[[g]])
@@ -88,35 +84,51 @@ filtered_features <- list()
 cox_results <- list()  # Store full cox results for C-index extraction
 for (g in names(cox_files)) {
   cox <- fread(cox_files[[g]])
-  cox <- cox[!is.na(FDR) & FDR <= 0.05]
-  filtered_features[[g]] <- cox$Signature
-  cox_results[[g]] <- cox  # Store for later C-index extraction
+  
+  # Strictly filter by FDR < 0.05
+  cox_filtered <- cox[!is.na(FDR) & FDR < 0.05]
+  
+  # Sort by FDR for easier interpretation (smallest to largest)
+  cox_filtered <- cox_filtered[order(FDR, decreasing = FALSE)]
+  
+  # Log information about initial filtering
+  cat(g, "pathway: Initially filtered from", nrow(cox), "to", nrow(cox_filtered), 
+      "signatures with FDR < 0.05\n")
+  
+  # Take only top 20 features with lowest FDR values (if available)
+  top_count <- min(20, nrow(cox_filtered))
+  cox_top <- cox_filtered[1:top_count]
+  
+  # Store both filtered signatures and full filtered results
+  filtered_features[[g]] <- cox_top$Signature
+  cox_results[[g]] <- cox_top  # Store top results for later use
+  
+  # Log information about top feature selection
+  cat(g, "pathway: Selected top", top_count, "signatures with lowest FDR values\n")
+  
+  if (top_count > 0) {
+    cat("  Lowest FDR =", format(cox_top$FDR[1], scientific = TRUE, digits = 2),
+        ", Highest FDR =", format(cox_top$FDR[top_count], scientific = TRUE, digits = 2), "\n")
+  }
 }
-
-# --- 2.5 FILTER GENOMIC FEATURES BY FDR-PASSING SIGNATURES ---
-for (g in names(cox_files)) {
-  # Get the cox file for this group and select top 10 signatures by FDR
-  cox <- cox_results[[g]]  # Use stored cox results
-  cox <- cox[order(FDR, decreasing = FALSE)]
-  top_signatures <- head(cox$Signature, 10)
-  genomic_mat <- get(paste0(g, "_genomic"))
-  filtered_features[[g]] <- top_signatures
-}
-# ---- 3. CORRELATION FILTERING ----
+# ---- 3. USE GENOMIC FEATURES DIRECTLY (SKIP CORRELATION) ----
 final_features <- list()
-for (g in names(correlation_files)) {
-  corr <- fread(correlation_files[[g]])
-  # Robust matching: ensure both columns are character, trimmed, and case-matched
-  corr$GenomicFeature <- trimws(as.character(corr$GenomicFeature))
-  filtered_set <- trimws(as.character(filtered_features[[g]]))
-  # Only keep pairs with |SpearmanRho| > 0.4 and FDR-passing genomic features
-  keep <- corr[abs(SpearmanRho) > 0.4 & GenomicFeature %in% filtered_set]
-  # For each GenomicFeature, keep only the row with the highest absolute SpearmanRho
-  keep[, absRho := abs(SpearmanRho)]
-  setorder(keep, GenomicFeature, -absRho)
-  keep <- keep[!duplicated(GenomicFeature)]
-  keep[, absRho := NULL]
-  final_features[[g]] <- keep
+for (g in names(cox_files)) {
+  # Skip if we have no features passing FDR filter
+  if (length(filtered_features[[g]]) == 0) {
+    cat(g, "pathway: No features passed FDR < 0.05 filter, skipping further analysis\n")
+    final_features[[g]] <- data.table()
+    next
+  }
+  
+  # Create a data.table with the genomic features directly from Cox results
+  features_dt <- data.table(
+    GenomicFeature = filtered_features[[g]],
+    RadiomicFeature = "None"  # Placeholder since we're not using correlations
+  )
+  
+  final_features[[g]] <- features_dt
+  cat(g, "pathway: Using", nrow(features_dt), "genomic features with FDR < 0.05\n")
 }
 
 # ---- 4. GENERATE SURVIVAL CURVES FOR EACH GENOMIC FEATURE ----
@@ -127,7 +139,7 @@ for (g in names(final_features)) {
   
   for (i in seq_len(nrow(final_features[[g]]))) {
     feature <- final_features[[g]]$GenomicFeature[i]
-    radiomic <- final_features[[g]]$RadiomicFeature[i]
+    # Not using radiomic features anymore
     
     # Extract C-index from Cox results (already calculated for binary high/low groups)
     cox_c_index <- cox_data[Signature == feature, C_index]
@@ -140,8 +152,8 @@ for (g in names(final_features)) {
     # Merge clinical and feature
     merged <- merge(clinical, genomic_mat[, .(SampleID, value = get(feature))], by = "SampleID")
     
-    # Remove rows with missing values
-    merged <- merged[!is.na(value) & !is.na(OS_days_CCRCC) & !is.na(OS_event_CCRCC)]
+    # Remove rows with missing values - adjust column names to match your PANCAN dataset
+    merged <- merged[!is.na(value) & !is.na(OS_days) & !is.na(OS_event)]
     
     if (nrow(merged) < 10) {
       cat("Warning: Too few samples with complete data for", feature, ". Skipping.\n")
@@ -152,12 +164,22 @@ for (g in names(final_features)) {
     median_val <- median(merged$value, na.rm = TRUE)
     merged$group <- ifelse(merged$value > median_val, "High", "Low")
     
-    # Create annotation text with C-index from Cox model
-    c_index_text <- paste0("C-index = ", cox_c_index)
+    # Get FDR value from Cox results
+    cox_fdr <- cox_data[Signature == feature, FDR]
+    if (length(cox_fdr) == 0 || is.na(cox_fdr)) {
+      cat("Warning: FDR value not found for", feature, ". Skipping.\n")
+      next
+    }
+    
+    # Format FDR value
+    fdr_formatted <- format(cox_fdr, scientific = TRUE, digits = 2)
+    
+    # Create annotation text with C-index and FDR from Cox model
+    c_index_text <- paste0("C-index = ", cox_c_index, "\nFDR = ", fdr_formatted)
     
     # Survival curve
-    surv_obj <- Surv(time = merged$OS_days_CCRCC, event = merged$OS_event_CCRCC)
-    plot_title <- paste0("Survival Curve: High vs Low ", feature, " (", g, ")\nCorrelated with radiomic: ", radiomic)
+    surv_obj <- Surv(time = merged$OS_days, event = merged$OS_event)
+    plot_title <- paste0("Survival Curve: High vs Low ", feature, " (", g, ")\nFDR = ", fdr_formatted)
     p <- ggsurvplot(
       survfit(surv_obj ~ group, data = merged),
       data = merged, pval = TRUE, risk.table = TRUE, conf.int = TRUE,
@@ -185,11 +207,14 @@ for (g in names(final_features)) {
                color = "black",
                fontface = "bold")
     
-    # Clean feature and radiomic names for filename
+    # Clean feature name for filename
     clean_feature <- gsub("[^A-Za-z0-9_]", "_", feature)
-    clean_radiomic <- gsub("[^A-Za-z0-9_]", "_", radiomic)
     
-    ggsave(file.path(output_dir, paste0("survival_curve_", g, "_", clean_feature, "_corr_", clean_radiomic, ".png")), 
+    # Format FDR for filename (replace decimal point with p)
+    fdr_str <- sprintf("FDR%.5f", cox_fdr)
+    fdr_str <- gsub("\\.", "p", fdr_str)
+    
+    ggsave(file.path(output_dir, paste0("survival_curve_", g, "_", clean_feature, "_", fdr_str, ".png")), 
            p$plot, width = 14, height = 7, dpi = 300)
   }
 }
